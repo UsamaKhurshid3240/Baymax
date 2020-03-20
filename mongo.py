@@ -19,8 +19,8 @@ app.config.update(
 	MAIL_SERVER='smtp.gmail.com',
 	MAIL_PORT=465,
 	MAIL_USE_SSL=True,
-	MAIL_USERNAME = 'baymaxun@gmail.com',
-	MAIL_PASSWORD = '123-baymax.UN'
+	MAIL_USERNAME = '****@gmail.com',
+	MAIL_PASSWORD = '*******'
 	)
 mail = Mail(app)
 app.config['MONGO_DBNAME'] = 'reactloginreg'
@@ -66,7 +66,7 @@ def register():
 @app.route('/send/mail', methods=['POST'])
 def send_mail():
 
-		msg = Message("Email Verification",sender="baymaxun@gmail.com",recipients=[str(request.get_json()['email'])])
+		msg = Message("Email Verification",sender="*****@gmail.com",recipients=[str(request.get_json()['email'])])
 		msg.body = "Verification Code : "+str(random.randint(9999,99999))        
 		mail.send(msg)
         
