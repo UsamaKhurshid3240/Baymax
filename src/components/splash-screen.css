@@ -348,12 +348,12 @@ $NUM_LAYERS: 20;
 }
 
    
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1000px) {
 /* DEMO-SPECIFIC STYLES */
 .typewriter h1 {
   color: black;
   font:  'Pacifico', 'Kaushan Script', Futura, 'Roboto', 'Trebuchet MS', Helvetica, sans-serif; 
-  font-size:20px !important;
+  font-size:16px ;
   overflow: hidden; /* Ensures the content is not revealed until the animation */
   border-right: .15em solid orange; /* The typwriter cursor */
   white-space: normal !important ; /* Keeps the content on a single line */
@@ -365,3 +365,22 @@ $NUM_LAYERS: 20;
 }
 
 }
+
+  
+@media only screen and (max-width: 1100px) {
+  /* DEMO-SPECIFIC STYLES */
+  .typewriter h1 {
+    color: black;
+    font:  'Pacifico', 'Kaushan Script', Futura, 'Roboto', 'Trebuchet MS', Helvetica, sans-serif; 
+    font-size:25px ;
+    overflow: hidden; /* Ensures the content is not revealed until the animation */
+    border-right: .15em solid orange; /* The typwriter cursor */
+    white-space: normal !important ; /* Keeps the content on a single line */
+    margin: 0 60px !important; /* Gives that scrolling effect as the typing happens */
+    letter-spacing: .15em; /* Adjust as needed */
+    animation: 
+      typing 3.5s steps(30, end),
+      blink-caret .5s step-end infinite;
+  }
+  
+  }

@@ -1,4 +1,50 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### BAYMAX An Interactive Stress Manager
+
+## Home Page
+<img src="src\screenshots\1.PNG">
+
+## 
+<img src="src\screenshots\2.PNG">
+
+## Login
+<img src="src\screenshots\3.PNG">
+
+## Register
+<img src="src\screenshots\4.PNG">
+
+## 
+<img src="src\screenshots\5.PNG">
+
+##  
+<img src="src\screenshots\6.PNG">
+
+## 
+<img src="src\screenshots\7.PNG">
+
+## Profile
+<img src="src\screenshots\8.PNG">
+
+
+
+## Status
+<img src="src\screenshots\12.PNG">
+
+## Chat
+<img src="src\screenshots\13.PNG">
+
+## Forgot Password Login Page
+<img src="src\screenshots\14.PNG">
+
+## 
+<img src="src\screenshots\15.PNG">
+
+## Personal Info with Udpdate Functionality
+<img src="src\screenshots\16.PNG">
+
+
+## Change Password 
+<img src="src\screenshots\17.PNG">
+
 
 ## Available Scripts
 
@@ -8,6 +54,8 @@ In the project directory, you can run:
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+Run Server mongo.py file
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.

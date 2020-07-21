@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-
+import "../components/style.scss";
 class Landing extends Component {
  
 
@@ -11,15 +11,9 @@ class Landing extends Component {
             <div className="container">
                 <div className="jumbotron mt-5">
                 
-                <div className="col-sm-8 col-md-10 col-lg-12 nm">
-                   
-                        
-                   
- 
-
-
+                   <div className="col-sm-8 col-md-10 col-lg-12 nm">
                    <div className="content-center brand">  <div className="content-center robo-pic"></div><br></br><h1 className="heading">BAYMAX</h1><br></br>
-<h2 className="heading">An: Interactive Stress Manager</h2>
+                    <h2 className="heading">An Interactive Stress Manager</h2>
                   
         
         </div>

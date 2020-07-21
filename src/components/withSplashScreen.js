@@ -13,6 +13,7 @@ function LoadingMessage() {
 
  
   return (
+ 
     <div className="splash-screen">
    
 
@@ -20,10 +21,12 @@ function LoadingMessage() {
 
     
       <div className="loading-dot">.</div>
+     
       <div className="typewriter">
-	  <h1 className="project-name">BAYMAX: AN INTERACTIVE STRESS MANAGER</h1>
+	  <h1 className="project-name">BAYMAX AN INTERACTIVE STRESS MANAGER</h1>
     </div>
     </div>
+    
     
   );
 
@@ -37,9 +40,13 @@ function withSplashScreen(WrappedComponent) {
       this.state = {
         loading: true,
       };
+     
     }
 
     async componentDidMount() {
+      var t= localStorage.getItem('usertoken')
+    if(t==null){
+    
       try {
        
         setTimeout(() => {
@@ -53,6 +60,12 @@ function withSplashScreen(WrappedComponent) {
           loading: false,
         });
       }
+    }
+    else{
+      this.setState({
+        loading: false,
+      });
+    }
 	}
 	
 

@@ -4,30 +4,39 @@
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.4.0",
+    "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
+    "bootstrap": "^4.5.0",
+    "cors": "^2.8.5",
     "flask": "^0.2.10",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.1",
     "jquery-react": "^1.0.0",
     "jqueryui": "^1.11.1",
     "jwt-decode": "^2.2.0",
-    "moment": "^2.24.0",
-    "node-sass": "^4.13.1",
+    "moment": "^2.27.0",
+    "node-sass": "^4.14.1",
+    "otp-input-react": "^0.2.4",
     "pi": "^2.0.3",
     "pip": "0.0.1",
-    "react": "^16.12.0",
-    "react-date-picker": "^7.10.0",
-    "react-datepicker": "^2.14.0",
-    "react-dom": "^16.12.0",
+    "react": "^16.13.1",
+    "react-component-countdown-timer": "^0.1.8",
+    "react-countdown-clock": "^2.7.0",
+    "react-countdown-now": "^2.1.2",
+    "react-date-picker": "^7.11.1",
+    "react-datepicker": "^2.16.0",
+    "react-dom": "^16.13.1",
     "react-jqueryui": "^0.1.0",
     "react-modal": "^3.11.2",
     "react-moment": "^0.9.7",
-    "react-pin-input": "^0.9.1",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.3.0",
+    "react-otp-input": "^1.0.1",
+    "react-pin-input": "^0.9.3",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^2.1.8",
     "react-toastify": "^5.5.0",
-    "react-verification-code-input": "^1.2.3"
+    "react-verification-code-input": "^1.2.3",
+    "rm": "^0.1.8",
+    "rm-rf": "^2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -49,5 +58,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "mkdirp": "^1.0.4",
+    "rimraf": "^3.0.2"
   }
 }

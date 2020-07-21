@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager 
 from flask_jwt_extended import create_access_token
 from flask_mail import Mail, Message
-import random
+import random   
 import datetime
 
 
@@ -23,8 +23,8 @@ app.config.update(
 	MAIL_PASSWORD = '123-baymax.UN'
 	)
 mail = Mail(app)
-app.config['MONGO_DBNAME'] = 'reactloginreg'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/reactloginreg'
+app.config['MONGO_DBNAME'] = 'Baymax'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/baymax'
 app.config['JWT_SECRET_KEY'] = 'secret'
 
 mongo = PyMongo(app)
@@ -39,7 +39,8 @@ def register():
     first_name = request.get_json()['first_name']
     dob= request.get_json()['dob']
     email = request.get_json()['email']
-    
+    gender = request.get_json()['gender']
+
     password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf-8')
     
     now = datetime.datetime.now()
@@ -50,6 +51,7 @@ def register():
         'dob': dob,
         'email': email,
         'password': password,
+        'gender':gender,
         'age':age,
         'created': now 
     })
@@ -62,8 +64,69 @@ def register():
 
     
 
+@app.route('/users/update', methods=["POST"])
+def update():
+    users = mongo.db.users 
+    first_name = request.get_json()['first_name']
+    dob= request.get_json()['dob']
+    email = request.get_json()['email']
+
+    print(first_name)
+    print(email)
+    print(dob)
+   
+    idd = request.get_json()['id']
+    now = datetime.datetime.now()
+    age = str(now.year-int(dob[slice(0,4)]))
+   
+    # Updating fan quantity form 10 to 25. 
+    filter = { '_id': ObjectId(idd) } 
+  
+    # Values to be updated. 
+    newvalues = { "$set": {  'first_name': first_name,
+        'dob': dob,
+        'email': email,
+       
+        'age':age,
+        'created': now  } } 
+ 
+    users.update_one(filter, newvalues)  
+   
+  
+
+    result = {'email':"ysdh"}
+
+    return jsonify({'result' : result})
+
+    
+@app.route('/users/updatepass', methods=["POST"])
+def update_pass():
+    users = mongo.db.users 
+
+    password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf-8')
+
+    idd = request.get_json()['id']
+    now = datetime.datetime.now()
+    # Updating fan quantity form 10 to 25. 
+    filter = { '_id': ObjectId(idd) } 
+  
+    # Values to be updated. 
+    newvalues = { "$set": {  
+        'password':password,
+        'created': now  } } 
+ 
+    users.update_one(filter, newvalues)  
+   
+  
+
+    result = {'email':"password update"}
+
+    return jsonify({'result' : result})
+
+    
 
 @app.route('/send/mail', methods=['POST'])
+
 def send_mail():
 
 		msg = Message("Email Verification",sender="baymaxun@gmail.com",recipients=[str(request.get_json()['email'])])
@@ -73,6 +136,37 @@ def send_mail():
 		return msg.body
 	
 
+@app.route('/email/check', methods=['POST'])
+
+def email_check():
+
+		
+
+        
+    users = mongo.db.users  
+    email = request.get_json()['email']
+    result=""
+   
+
+    result = users.find_one({'email': email})
+    res="Not Found"
+    if result is None:
+        result={'email': res}
+    else:
+         result =  {
+                
+                'email': result['email'],
+                'id':str(result['_id']),
+                
+            }
+      
+    
+
+    print(result)
+
+    return jsonify({'result' : result})
+
+   
 
 @app.route('/users/login', methods=['POST'])
 def login():
@@ -94,14 +188,46 @@ def login():
             access_token = create_access_token(identity = {
                 'first_name': response['first_name'],
                 'dob': response['dob'],
-                'email': response['email']
+                'email': response['email'],
+                'id':str(response['_id']),
+                'age':response['age'],
+                'gender':response['gender']
             })
             result = jsonify({'token':access_token})
         else:
             result = jsonify({"error":"Invalid username and password"})
     else:
         result = jsonify({"result":"No results found"})
+ 
     return result 
+
+@app.route('/users/chekpass', methods=['POST'])
+def check_pass(): 
+
+		
+
+        
+    users = mongo.db.users 
+    email = request.get_json()['email']
+    password = request.get_json()['password']
+    result = ""
+
+   
+
+    response = users.find_one({'email': email})
+
+    if response:
+        if bcrypt.check_password_hash(response['password'], password):
+           
+            result = jsonify({'result':"Matched"})
+        else:
+            result = jsonify({"result":"Invalid username and password"})
+    else:
+        result = jsonify({"result":"No results found"})
+ 
+    return result 
+
+  
 
 if __name__ == '__main__':
     app.run(debug=True)

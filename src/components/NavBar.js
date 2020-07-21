@@ -1,14 +1,31 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import $ from 'jquery'
+import "../components/style.scss";
 class Navbar extends Component {
+  
+  constructor() {
+    super()
+  this.state = {
+     
+  }
+   
+ 
+}
+  
     logOut (e) {
-        e.preventDefault()
-        localStorage.removeItem('usertoken')
-        this.props.history.push(`/`)
+        e.preventDefault();
+        localStorage.removeItem('usertoken');
+        this.props.history.push(`/`);
+        this.topFunction=this.topFunction.bind(this);
+        
     }
 
+   
     componentDidMount(){
+      this.login();
+        // When the user clicks on the button, scroll to the top of the document
+
         // window.onscroll = () => {
         //     const nav = document.querySelector('#navbar');
         //     if(this.scrollY <= 10) nav.className = ''; else nav.className = 'scroll';
@@ -126,11 +143,28 @@ class Navbar extends Component {
 
 
     }
+
+    topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }
+
+
+      login(){
+
+        var t= localStorage.getItem('usertoken');
+        if(t!=null){
+        this.props.history.push(`/profile`);
+        }  
+        else{
+          this.props.history.push(`/`);
+        }
+      }
     render () {
         const loginRegLink = (
             <ul className="navbar-nav">
                 <li className="nav-item">
-                    <Link to="/login" className="nav-link">
+                    <Link to="/login" className="nav-link" >
                         Login
                     </Link>
                 </li>
@@ -261,11 +295,12 @@ class Navbar extends Component {
             //     </div>
             // </nav>
 <div className="pic ">
-            <nav id="global-nav" className="navbar    navbar-expand-sm">
-                  <div className="col-sm-12 col-md-8 col-lg-2  "></div>
-                  <i className="fas fa-robot "></i>
-  <a className="navbar-brand " href="#">
-  
+            <nav id="global-nav" className="navbar    navbar-expand-lg">
+                  <div className=" col-sm-1 col-md-12 col-lg-3  "></div>
+                  
+                 
+  <a className="navbar-brand  " href="#">
+  <i className="fas fa-robot "></i>
   BAYMAX
   </a>
   <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-2" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -274,14 +309,14 @@ class Navbar extends Component {
   </button>
   <div className="collapse navbar-collapse " id="navbar-list-2">
   <div className="col-sm-12 col-md-8 col-lg-6  "></div>
-    <ul className="navbar-nav">
-      <li className="nav-item active">
+    <ul className="navbar-nav act">
+      <li className="nav-item ">
        
-        <Link to="/login" className="nav-link ">
+        <Link to="/login" className="nav-link " >
                         Login
                     </Link>
       </li>
-      <li className="nav-item">
+      <li className="nav-item ">
       <Link to="/register" className="nav-link reg-lnk">
                         Register
                     </Link>
@@ -301,35 +336,83 @@ class Navbar extends Component {
   
   </div>
  
-   
- 
- <h1 className="text-left">ABOUT</h1>
-                   <div className="col-sm-8 mx-auto">
-                   <fieldset> <p className="text-center">WELCOME</p></fieldset>
+ <div className="row">   
+  <div className="col-lg-1 col-md-1"></div>
+  <div className="col-lg-10 col-md-10 col-sm-12">
+    <fieldset  className="fldst">
+      <legend>
+ <h1 className="text-left"><span className="abt-txt"> ABOUT</span></h1></legend>
+                   <div className="">
+                   <fieldset className="fldst"> <p className="text-center">Hello, welcome to Baymax, Your Interactive Stress Manager. To get started press (Register Button) or if you already have an account (Login Button).</p>
+                   <br></br>
+                   <div id="back-img" className="pic-div" ></div>
+                   <p>
+                       
+
+Our Mission:
+To provide our users with an assistant (aka Chat-bot) to (monitor, identify, resolve) stress </p>
+<br></br>
+<div id="back-img1" className="pic-div" ></div>
+<p>
+
+
+Why (monitor, identify, resolve) stress?
+You are important. You are necessary. But since society is a bitch and it will knock you down. Baymax is there for you when life gives you shit, it is not perfect but it will try to help you get through.
+</p>
+<br></br>
+<div id="back-img2" className="pic-div" ></div>
+<p>
+
+
+What is Baymax?
+Baymax is an AI (Artificial Intelligence) chatbot which interacts and learns from each user. It keeps a record of each interactions to develop a more better approach to help you, this history will not be shared or sold to anyone it will be only be used for Baymax to learn and grow.
+It will be there for you when you’re feeling disconnected.
+</p>
+<br></br>
+<div id="back-img3" className="pic-div" ></div>
+<p>
+
+
+How does Baymax work?
+Baymax learns from each user and gets better in identifying and resolving their stress (more specifically it is designed for patients suffering from PTSD). It tracks your mood by analyzing your emotions through your webcam but this can be turned of if required. It also provides you with a graph or scale to display your mood based on its interactions with you, which can be viewed when required and it will also be displayed to you on a monthly basis to display your progress.
+</p>
+<br></br>
+<div id="back-img" className="pic-div" ></div>
+<p>
+
+
+Important Notice!
+It is not a complete replacement of a professional so if required it will contact concerned authorities.
+</p>
+<br></br>
+<div id="back-img4" className="pic-div" ></div>
+<p>
+
+P.S.
+  (monitor, identify, resolve) should have an animation that shows them one by one or something like that do not place them with each other and you can change the mission or notice part but don’t mess with the Why part and I’m not kidding about this. You can also mess around with the line spacing and indentations.
+
+</p></fieldset>
                    </div>
-               
+                   </fieldset>
            </div>
+         
  </div>
 
 </div>
+</div>
+<div className="col-lg-1 col-md-1"></div>
+</div>
 
 
-
-
-
+<div className="col-lg-12 col-md-12 col-sm-12">
 <footer className="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off f">
- <a href="#home" className="w3-button w3-light-grey"><i className="fa fa-arrow-up w3-margin-right"></i>To the top</a>
+ <a  className="w3-button w3-light-grey" onClick={this.topFunction}><i className="fa fa-arrow-up w3-margin-right"></i>To the top</a>
  <div className="w3-xlarge w3-section">
-   <i className="fa fa-facebook-official w3-hover-opacity"></i>
-   <i className="fa fa-instagram w3-hover-opacity"></i>
-   <i className="fa fa-snapchat w3-hover-opacity"></i>
-   <i className="fa fa-pinterest-p w3-hover-opacity"></i>
-   <i className="fa fa-twitter w3-hover-opacity"></i>
-   <i className="fa fa-linkedin w3-hover-opacity"></i>
+  
  </div>
- <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" className="w3-hover-text-green">w3.css</a></p>
+ 
 </footer>
-
+</div>
 </div>
  
 
