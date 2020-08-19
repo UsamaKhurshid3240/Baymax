@@ -1,8 +1,9 @@
   import React, { Component } from 'react'
   import ReactDOM from 'react-dom'
   import jwt_decode from 'jwt-decode'
-
+import {bot} from './UserFunctions';
   import $ from 'jquery'
+  import jwt from 'jwt-decode'
   import "../components/chat.scss";
   import ReactModal from 'react-modal';
   import Modal from 'react-modal';
@@ -13,18 +14,33 @@
           super()
           this.state = {
             expanded: false,
-            showModal: false
+            showModal: false,
+            txt:'',
+            img:'',
+            name:'',
+         
           }
           this.handleOpenModal = this.handleOpenModal.bind(this);
           this.handleCloseModal = this.handleCloseModal.bind(this);
+       this.txxt=this.txxt.bind(this);
+
+       var t= localStorage.getItem('usertoken')
+       var p= localStorage.getItem('password')
+       var decoded = jwt(t);
+       this.state.name=decoded.identity.first_name;
+      
+   
        
       }
 
+      txxt(){
+        console.log(this.state.txt);
+      }
       componentWillMount() {
         ReactModal.setAppElement('body');
     }
 
-    
+   
   
     handleOpenModal () {
       
@@ -37,12 +53,15 @@
     handleCloseModal () {
       this.setState({ showModal: false });
     }
+    onChange (e) {
+      this.setState({ [e.target.name]: e.target.value })
+      
+  }
 
-  
   componentDidMount(){
 
-
-    
+ 
+  
   //Thanks to the following for help:
   // * https://codepen.io/johnludena/pen/JvMvzB
   // * https://codepen.io/jenning/pen/JZzeJW
@@ -53,74 +72,74 @@
     
       userMessages: [],
       botMessages: [],
-      botGreeting: "oh hi! who are you?",
-      botLoading: false
+      botGreeting: "oh hi!"+this.state.name,
+      botLoading: true
+     
     };
+   
     
     class App extends React.Component {
       constructor(props) {
         super(props);
     
         this.state = data;
-      }
-    
-      updateUserMessages = newMessage => {
-        if (!newMessage){
-          return;  
-        }
+
         
-        var updatedMessages = this.state.userMessages;
+      }
+    componentDidMount(){
+     
+    }
+
+updateUserMessages = newMessage => {
+  
+  if (!newMessage){
+    return;  
+  }
+  
+  var updatedMessages = this.state.userMessages;
+
+  var updatedBotMessages = this.state.botMessages;
+  
     
-        var updatedBotMessages = this.state.botMessages;
-    
-        this.setState({
-          userMessages: updatedMessages.concat(newMessage),
-          botLoading: true
-        });
-    
-        // Replace with your Dialogflow client token
-        var request = new Request(
-          "https://api.dialogflow.com/v1/query?v=20150910&contexts=shop&lang=en&query=" +
-            newMessage +
-            "&sessionId=12345",
-          {
-            headers: new Headers({
-              Authorization: "Bearer bc13467053ad45feaaa6f23c8bfafa9d"
-            })
-          }
-        );
-    
-        fetch(request)
-          .then(response => response.json())
-          .then(json => {
-            var botResponse = json.result.fulfillment.speech;
-    
-            this.setState({
-              botMessages: updatedBotMessages.concat(botResponse),
-              botLoading: false
-            });
-          })
-          .catch(error => {
-            console.log("ERROR:", error);
-            this.setState({
-              botMessages: updatedBotMessages.concat('?'),
-              botLoading: false
-            });
-          });
-      };
-    
-      scrollBubble = element => {
-        if (element != null) {
-          element.scrollIntoView(true);
+  this.setState({
+    userMessages: updatedMessages.concat(newMessage),
+    botLoading: true
+  });
+  console.log(this.state.botLoading);
+      const newUser = {
+  
+          message: newMessage,
+          
         }
-      };
+      
+        console.log(newMessage)
+                bot(newUser).then(res => {
+                 
+                  var botResponse = res[0].text;
+          this.setState({
+            botMessages: updatedBotMessages.concat(botResponse),
+            botLoading: false
+          });
+          console.log(this.state.botLoading);
     
+                    });
+                   
+                   
+                  }
+  
+    scrollBubble = element => {
+      if (element != null) {
+        element.scrollIntoView(true);
+      }
+    };
       showMessages = () => {
+      
         var userMessages = this.state.userMessages;
         var botMessages = this.state.botMessages;
     
         var allMessages = [];
-      
+   
+        
         var i = 0;
         for (; i < userMessages.length; i++) {
           if (i === userMessages.length - 1) {
@@ -131,13 +150,15 @@
                 <BotBubble message={botMessages[i]} thisRef={this.scrollBubble} />
               );
             } else {
+              
               allMessages.push(
                 <UserBubble message={userMessages[i]} thisRef={this.scrollBubble} />
+                
               );
             }
             break;
           }
-    
+        
           allMessages.push(<UserBubble message={userMessages[i]} />);
           allMessages.push(<BotBubble message={botMessages[i]} />);
         }
@@ -153,6 +174,8 @@
       };
     
       onInput = event => {
+   
+
         if (event.key === "Enter") {
           var userInput = event.target.value;
     
@@ -171,11 +194,12 @@
       onClick = () => {
         var inp = document.getElementById("chat");
         var userInput = inp.value;
+        
     
         this.updateUserMessages(userInput);
         inp.value = "";
       };
-    
+
       render() {
         return (
           
@@ -187,6 +211,7 @@
               p2Text={this.state.p2Text}
             /> */}
             <div className="chat-container">
+        
               <ChatHeader />
               {this.showMessages()}
               <UserInput onInput={this.onInput} onClick={this.onClick} />
@@ -197,10 +222,28 @@
     }
     
     class UserBubble extends React.Component {
+      constructor() {
+        super()
+        this.state = {
+          letter:''
+        }
+
+        var t= localStorage.getItem('usertoken')
+        var decoded = jwt(t);
+        
+
+        this.state.letter=decoded.identity.email.charAt(0).toUpperCase();
+        }
+    
+    
+     
       render() {
         return (
           <div className="user-message-container" ref={this.props.thisRef}>
+            <div className="user-avatar" >{this.state.letter}</div>
+
             <div className="chat-bubble user">
+            
               {this.props.message}
             </div>
           </div>
@@ -209,28 +252,24 @@
     }
     
     class BotBubble extends React.Component {
+    componentDidMount(){
+   
+    }
       render() {
         return (
           <div className="bot-message-container" ref={this.props.thisRef}>
             <div className="bot-avatar" />
+            
             <div className="chat-bubble bot">
-              {this.props.message}
+                         {this.props.message}
+              
             </div>
           </div>
         );
       }
     }
     
-    // var Header = props => {
-    //   return (
-    //     <div className="header">
-    //       <div className="header-img" />
-    //       <h1> {props.headerText} </h1>
-    //       <h2> {props.pText} </h2>
-    //       <p> {props.p2Text} </p>
-    //     </div>
-    //   );
-    // };
+   
     
     var ChatHeader = props => {
       return (
@@ -250,6 +289,7 @@
             type="text"
             onKeyPress={props.onInput}
             placeholder="type something"
+            autoComplete="off"
           />
           <button className="input-submit" onClick={props.onClick} />
         </div>
@@ -465,12 +505,14 @@
       render () {
           return (
           <div className="back">
+              
               <div className="background"></div>
               <div id="main-div"></div>
               
               <div id="p"></div>
-           
+            
               </div>
+              
           )
       }
   }

@@ -321,7 +321,7 @@ function setCircleDasharray() {
 //             {Object.entries(remaining).map((el, i) => (
 //               <div key={i} className="entry">
 //                 <div key={el[1]} className="entry-value">
-//                   <span className="count top curr flipTop">{el[1] + 1}</span>
+//                   <span className="count top curr flipTop">{el[1] + 1}</spautoan>
 //                   <span className="count top next">{el[1]}</span>
 //                   <span className="count bottom next flipBottom">{el[1]}</span>
 //                   <span className="count bottom curr">{el[1] + 1}</span>
@@ -523,7 +523,7 @@ console.log(this.state.selectedOption);
           console.log("mail"+this.em);
           if(this.em=="Not Found"){
             console.log("Not F")
-            toast.error("Email Not Exists", {
+            toast.success("Email Not Exists", {
               position: toast.POSITION.CENTER_CENTER
             });
             this.state.bool=true;

@@ -29,7 +29,7 @@ class App extends Component {
           <Route exact path="/status" component={NavBarProfile} />
           <Route exact path="/profile" component={Sidemenu} />
           <Route exact path="/profile" component={NavBarProfile} />
-          <Route exact path="/settings" component={Sidemenu} />
+         
   
           <div className="container">
           <Route exact path="/chat" component={Chat} />

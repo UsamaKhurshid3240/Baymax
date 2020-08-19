@@ -10,11 +10,18 @@ class Questioniar extends Component {
         this.state = {
             first_name: '',
             last_name: '',
-            email: ''
+            email: '',
+            lname:''
         }
+        this.onChangee=this.onChangee.bind(this);
+        this.onSumit=this.onSumit.bind(this);
       
-    }
 
+    }
+    onChangee (e) {
+      this.setState({ [e.target.name]: e.target.value })
+      
+  }
     componentDidMount () {
         const token = localStorage.usertoken
         const decoded = jwt_decode(token)
@@ -103,15 +110,15 @@ $(".previous").click(function(){
 	});
 });
 
-$(".submit").click(function(){
- 
-	
-})
       
        
     }
 
    
+onSumit(){
+  console.log(this.state.lname);
+   
+ }
        
     render () {
         return (
@@ -119,11 +126,15 @@ $(".submit").click(function(){
            
            
            
-               
-                    <form id="msform">
+          <div className="App">
+          <div className="imageDiv image1"></div>
+          <div className="imageDiv image2 fadeInClass"></div>
+          <div className="imageDiv image3 "></div>
+          <div className="imageDiv image4 fadeInClass"></div>
+                    <form id="msform"  onSubmit={this.onSumit}>
                      
                         <ul id="progressbar">
-                          <li className="active">General Information</li>
+                          <li className="active ">General Information</li>
                           <li>TRIP Information</li>
                             <li>Physical and Financial Status</li>
                             <li>Submit</li>
@@ -135,7 +146,7 @@ $(".submit").click(function(){
                             <label htmlFor="fname">Project Title</label>
                             <input type="text" name="fname" placeholder="Project Title" />
                             <label htmlFor="fname">Description</label>
-                          <textarea name="lname" placeholder="Description"></textarea>
+                          <textarea name="lname" placeholder="Description"onChange={this.onChangee}></textarea>
                           <label htmlFor="fname">Basis for Implementation</label>
                             <input type="text" name="fname" placeholder="Basis for implementation"/>
                             <label htmlFor="fname">Program or Project</label>
@@ -174,10 +185,11 @@ $(".submit").click(function(){
                             <input type="text" name="email" placeholder="Username"/>
                             <input type="password" name="pass" placeholder="Password"/>
                             <input type="button" name="previous" className="previous action-button-previous" value="Previous"/>
-                          <Link to='/chat'>  <input type="submit" name="submit" className="submit action-button" value="Submit" /></Link>
+                           <input type="submit"  className="submit action-button" value="Submit" />
                         </fieldset>
                     </form>
-                   
+                   </div>
+                
              
          
      

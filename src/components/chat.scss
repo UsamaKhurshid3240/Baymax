@@ -15,9 +15,6 @@ $inner-margin: 15px;
 
 $avatar-size: 52px;
 
-$avatar-url: "https://zephyo.github.io/22Days/code/10/graphics/cutebearicon.gif";
-$bg-url: "https://zephyo.github.io/22Days/code/10/graphics/manu-franco-unsplash.jpg";
-$header-url: "https://zephyo.github.io/22Days/code/10/graphics/rikkakuma.gif";
 
 $snap: cubic-bezier(0.36, -0.04, 0.15, 1.64);
 
@@ -85,7 +82,7 @@ background-size: cover;
       z-index: -1;
       width: 12rem;
       height: 12rem;
-      background: url($header-url) no-repeat;
+     
       background-size: contain;
     }
   }
@@ -143,7 +140,7 @@ background-size: cover;
         flex: none;
         display: flex;
         .bot-avatar {
-          background-image: url($avatar-url);
+         background-image: url('../images.png');
           background-size: cover;
           background-position: center;
           border-radius: 50%;
@@ -164,6 +161,7 @@ background-size: cover;
         margin-bottom: $inner-margin;
         max-width: 60%;
         overflow-wrap: break-word;
+        margin-right: 53px;
         word-wrap: break-word;
         word-break: break-word;
         hyphens: auto;
@@ -244,7 +242,7 @@ background-size: cover;
   left: 0;
   right: 0;
   bottom: 0;
-  background: url($bg-url) no-repeat 0 0;
+ 
   filter: blur(5vh);
   background-size: cover;
   background-position: center;
@@ -792,5 +790,40 @@ animation: 0.4s hide-sidebar ease-in forwards !important;
   
 
 }
+
+
+
+
+
+
+.user-avatar {
+  // background-image: url('../images.png');
+  //  background-size: cover;
+  //  background-position: center;
+  //  border-radius: 50%;
+  //  width: $avatar-size;
+  //  height: $avatar-size;
+
+
+  animation: glowing 1300ms infinite;
+  width: 44px;
+  height: 45px;
+ background-color: white;
+ opacity: 0.6;
+  color:white;
+  border-radius:50px;
+  text-align: center;
+  font-size: 31px;
+  margin-top: -2px;
+  @keyframes glowing {
+    0% { color: red; box-shadow: 0 0 5px red; }
+    50% { color: red; box-shadow: 0 0 20px red; }
+    100% { color: red; box-shadow: 0 0 5px green; }
+  }   
+   margin-left: 458px;
+   margin-bottom: -44px;
+ }
+
+
 
 

@@ -61,7 +61,7 @@ class NavbarProfile extends Component {
             <div className="p-2 ">baymax</div>
             <div className="p-2 ">
 
-            <div className=" prf-pic">{this.state.letter}</div></div>
+            <div className=" prf-pic"><span className="topnav-lett">{this.state.letter}</span></div></div>
             <div className="p-3 ">
           
            <span className="lg-mail">

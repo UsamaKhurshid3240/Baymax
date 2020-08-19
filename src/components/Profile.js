@@ -243,10 +243,10 @@ handledob = date => {
           <div className="container" >
                
                <div className="row">
-               <div className="col-12 col-sm-12 col-md-2 col-lg-0 ">here</div>
+               <div className="col-12 col-sm-12 col-md-2 col-lg-0 "></div>
                <div className="col-12 col-sm-12 col-md-8 col-lg-5 " >
               <div className="row">
-              <div className="col-2 col-sm-2 col-md-2 col-lg-2">here1</div>
+              <div className="col-2 col-sm-2 col-md-2 col-lg-2"></div>
                 <div className="col-10 col-sm-10 col-md-12 col-lg-12">
                <div className="mainn w3-hover-opacity-off"><div className="content">
                 
@@ -484,7 +484,7 @@ handledob = date => {
           </div>
             <div className="col-12 col-sm-12 col-md-8 col-lg-5 status">
             <div className="row">
-              <div className="col-2 col-sm-2 col-md-2 col-lg-2">here1</div>
+              <div className="col-2 col-sm-2 col-md-2 col-lg-2"></div>
                 <div className="col-10 col-sm-10 col-md-12 col-lg-12">
                <div className="mainn w3-hover-opacity-off"><div className="content">
                 

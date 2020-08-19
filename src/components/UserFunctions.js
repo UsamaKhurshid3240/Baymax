@@ -1,5 +1,6 @@
 import axios from 'axios'
 import jwt from 'jwt-decode'
+
 export const register = newUser => {
     return axios
         .post("http://localhost:5000/users/register", {
@@ -127,3 +128,24 @@ export const emailcheck = newUser => {
         
 
 }
+
+
+export const bot = newUser => {
+   
+    return axios
+        .post("http://localhost:5005/webhooks/rest/webhook", {
+            "sender": "Usama Khurshid",
+          "message":newUser.message,
+           
+        })
+        .then(response => {
+            console.log(response);
+            return response.data;
+        })
+}
+
+
+
+
+
+

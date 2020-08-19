@@ -278,7 +278,7 @@ getUserDetails = () => {
               
             }
             else{
-              toast.success("Email Already Exists", {
+              toast.success("Email  Exists", {
                 position: toast.POSITION.CENTER_CENTER
               });
               $('#nwpass').show();
