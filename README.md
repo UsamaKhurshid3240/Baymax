@@ -1,4 +1,4 @@
-### BAYMAX An Interactive Stress Manager
+### BAYMAX An Interactive Stress Manager (ChatBot)
 
 ## Home Page
 <img src="src\screenshots\1.PNG">
@@ -29,7 +29,7 @@
 ## Status
 <img src="src\screenshots\12.PNG">
 
-## Chat
+## Chatbot
 <img src="src\screenshots\13.PNG">
 
 ## Forgot Password Login Page
