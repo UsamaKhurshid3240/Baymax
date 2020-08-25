@@ -99,6 +99,31 @@ def update():
     return jsonify({'result' : result})
 
     
+@app.route('/users/delAccount', methods=["POST"])
+def delete():
+    users = mongo.db.users 
+   
+    email = request.get_json()['email']
+    password = request.get_json()['password']
+
+    response = users.find_one({'email': email})
+
+    if response:
+        if bcrypt.check_password_hash(response['password'], password):
+           myquery = { "email": response['email'] }
+
+           users.delete_one(myquery)
+
+           result = {'delete':"successfully"}
+        else:
+            result = {"delete":"Nan"}
+    else:
+        result = {"result":"No results found"}
+ 
+
+    return jsonify({'result' : result})
+
+    
 @app.route('/users/updatepass', methods=["POST"])
 def update_pass():
     users = mongo.db.users 

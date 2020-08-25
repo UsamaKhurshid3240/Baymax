@@ -146,6 +146,21 @@ export const bot = newUser => {
 
 
 
+export const deleteAccount = User => {
+   
+    return axios
+        .post("http://localhost:5000/users/delAccount", {
+            email: User.email,
+          password:User.password,
+           
+        })
+        .then(response => {
+            console.log(response);
+            return response.data;
+        })
+}
+
+
 
 
 
