@@ -19,13 +19,13 @@ app.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=465,
     MAIL_USE_SSL=True,
-    MAIL_USERNAME = 'baymaxun@gmail.com',
-    MAIL_PASSWORD = '123-baymax.UN'
+    MAIL_USERNAME = '**********',
+    MAIL_PASSWORD = '*********'
     )
 mail = Mail(app)
-app.config['MONGO_DBNAME'] = 'Baymax'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/baymax'
-app.config['JWT_SECRET_KEY'] = 'secret'
+app.config['MONGO_DBNAME'] = '***********'
+app.config['MONGO_URI'] = '**************'
+app.config['JWT_SECRET_KEY'] = '******'
 
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)        
@@ -170,7 +170,7 @@ def update_pass():
 
 def send_mail():
 
-        msg = Message("Email Verification",sender="baymaxun@gmail.com",recipients=[str(request.get_json()['email'])])
+        msg = Message("Email Verification",sender="*******************",recipients=[str(request.get_json()['email'])])
         msg.body = "Verification Code : "+str(random.randint(9999,99999))        
         mail.send(msg)
         
@@ -186,7 +186,7 @@ def contact_mail():
         message = request.get_json()['message']
 
         
-        msg = Message("Contact Support",sender="baymaxun@gmail.com",recipients=["baymaxun@gmail.com"])
+        msg = Message("Contact Support",sender="**********@gmail.com",recipients=["***********@gmail.com"])
         msg.body = "Name :"+name+"\r\n"+"Email : "+email+"\r\n"+"\r\n"+message
         mail.send(msg)
         
