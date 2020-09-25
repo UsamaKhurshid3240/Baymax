@@ -1,7 +1,7 @@
-
 .fa-2x {
 font-size: 2em;
 }
+
 .fa {
 position: relative;
 display: table-cell;
@@ -12,21 +12,11 @@ vertical-align: middle;
 font-size:20px;
 }
 
-
-  
- 
-
 .main-menu:hover,nav.main-menu.expanded {
 width:250px;
 overflow:visible;
-
-
- 
-  box-shadow:  #0091d2 1px 1px 35px ;
- 
+box-shadow:  #0091d2 1px 1px 35px ;
 animation: fade 0.5s ease 0.2s both;
-
-
 }
 
 .main-menu {
@@ -160,38 +150,22 @@ overflow:hidden;
 -webkit-transition:width .05s linear;
 transition:height .05s linear;
 -webkit-transform:translateZ(0) scale(1,1);
-z-index:999;
-
-
- 
+z-index:999; 
 box-shadow:  #0091d2 1px 1px 35px ;
- 
-
-
-  
- 
-
-
 }
 
 .lgo{
   color: red;
-  margin-left: -1664px;
-  
+  margin-left: -1664px;  
 }
-
-
 
 .txt-baymax{
-
   position: absolute;
   margin-top: 6px;
- 
 }
+
 .icn-baymax{
- 
   margin-top: 11px;
- 
 }
 
 
@@ -210,24 +184,17 @@ box-shadow:  #0091d2 1px 1px 35px ;
     margin-left: 160px;
    
   }
-
-  
-
-  
 }
 
 .prf-mail{
   position: absolute;
     color: red;
- // margin-left: 1264px;
 }
 
-
 .email-baymax{
-  
+
   position: absolute;
   margin-top: -39px;
-  
   font-weight: 900;
   font-style: italic;
   font-size: 16px;
@@ -244,31 +211,6 @@ box-shadow:  #0091d2 1px 1px 35px ;
   margin-top: 4px;
 }
 
-@media only screen and (max-width: 600px) {
-// .prf-mail {
-//   position: absolute;
-//   color: red;
-//   margin-left: 108px;
-//   margin-top: 39px;
-//   font-size: x-small;
-// }
-
-// .email-baymax {
-//   animation: glowing 1300ms infinite;
-//   position: absolute;
-//   margin-top: -25px;
-//   font-weight: 900;
-//   font-style: italic;
-//   font-size: x-small;
-//   margin-left: 40px;
-// }
-.main-menu{
- // height: 256%;
-  //margin-top: 25px;
-}
-
-} 
-
 .red-logo{
   animation: d 1300ms infinite;
   color: white;
@@ -284,12 +226,9 @@ box-shadow:  #0091d2 1px 1px 35px ;
  @keyframes d {
   0% { color: black; box-shadow: 0 0 5px #0091d2; }
   50% { color: white; box-shadow: 0 0 20px #0091d2; }
-  100% { color: red; box-shadow: 0 0 5px red; }
-  
+  100% { color: red; box-shadow: 0 0 5px red; }  
 }
-
 }
-
 
 .li-top{
   margin-top: 20px;
@@ -312,48 +251,78 @@ box-shadow:  #0091d2 1px 1px 35px ;
   .prf-mail {
    margin-left: -70px;
   }
-
 }
-
-
 
 @media only screen and (max-width: 600px) {
   .prf-mail {
    margin-left: 40px;
   }
-
 }
-
-
-
 
 @media only screen and (max-width: 870px) {
   .prf-mail {
    margin-left: -170px;
   }
-
 }
-
 
 @media only screen and (max-width: 747px) {
   .prf-mail {
    margin-left: 100px;
   }
-
 }
-
 
 @media only screen and (max-width: 365px) {
   .prf-mail {
    margin-left: 10px;
   }
-
 }
-
-
 
 .main-menu:hover{
   .red-logo{
     opacity:0.5;
   }
 }
+
+.logoutconfirm{
+
+  width: 100%;
+  height: 60px;
+  background-color: red;
+  color: white;
+ 
+}
+
+.yeslog{
+  animation: yes 1300ms infinite;
+ 
+  @keyframes yes {
+    0% { color: black; box-shadow: 0 0 5px #0091d2; }
+    50% { color: white; box-shadow: 0 0 20px #0091d2; }
+    100% { color: red; box-shadow: 0 0 5px red; }
+    
+  }
+border: 2px dotted darkred;
+color:black;
+&:hover{
+ 
+  color:white;
+}
+
+}
+
+.nolog{
+  animation: no 1300ms infinite;
+  @keyframes no {
+    0% { color: black; box-shadow: 0 0 5px #0091d2; }
+    50% { color: white; box-shadow: 0 0 20px #0091d2; }
+    100% { color: red; box-shadow: 0 0 5px red; }
+    
+  }
+  background-color: green;
+ border: 2px dotted darkred;
+  margin-left: 20px;
+  color:black;
+  &:hover{ 
+    color:white;
+  }
+  }

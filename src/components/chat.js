@@ -1,520 +1,387 @@
+  //import Libraries
   import React, { Component } from 'react'
   import ReactDOM from 'react-dom'
-  import jwt_decode from 'jwt-decode'
-import {bot} from './UserFunctions';
-  import $ from 'jquery'
   import jwt from 'jwt-decode'
-  import "../components/chat.scss";
-  import ReactModal from 'react-modal';
-  import Modal from 'react-modal';
-  import { BrowserRouter as Router, Route,withRouter,Link } from 'react-router-dom'
+  import { bot } from './UserFunctions';
+  import $ from 'jquery'
+  import {withRouter} from 'react-router-dom';
+  import{status} from './UserFunctions'
+  import "react-datepicker/dist/react-datepicker.css";
+  import 'react-toastify/dist/ReactToastify.css';
 
-  class Chat extends Component {
-      constructor() {
-          super()
-          this.state = {
-            expanded: false,
-            showModal: false,
-            txt:'',
-            img:'',
-            name:'',
-         
-          }
-          this.handleOpenModal = this.handleOpenModal.bind(this);
-          this.handleCloseModal = this.handleCloseModal.bind(this);
-       this.txxt=this.txxt.bind(this);
-
-       var t= localStorage.getItem('usertoken')
-       var p= localStorage.getItem('password')
-       var decoded = jwt(t);
-       this.state.name=decoded.identity.first_name;
-      
-   
-       
+  class Settings extends Component {
+    constructor() {
+      super()
+      this.state = {
+        textarea: '',
+        id:''
       }
 
-      txxt(){
-        console.log(this.state.txt);
+      var currentCallback;
+
+      // override default browser alert
+      window.alert = function (msg, callback) {
+        $('.message').text(msg);
+        $('.customAlert').css('animation', 'fadeIn 0.3s linear');
+        $('.customAlert').css('display', 'inline');
+        setTimeout(function () {
+          $('.customAlert').css('animation', 'none');
+        }, 300);
+        currentCallback = callback;
       }
-      componentWillMount() {
-        ReactModal.setAppElement('body');
-    }
 
-   
-  
-    handleOpenModal () {
-      
-    $('#content').hide();
-      console.log("hdhsfhdsd");
-      this.setState({ showModal: true });
-      
-    }
-    
-    handleCloseModal () {
-      this.setState({ showModal: false });
-    }
-    onChange (e) {
-      this.setState({ [e.target.name]: e.target.value })
-      
-  }
+      $(function () {
 
-  componentDidMount(){
+        // add listener for when our confirmation button is clicked
+        $('.confirmButton').click(function () {
+          $('.customAlert').css('animation', 'fadeOut 0.3s linear');
+          setTimeout(function () {
+            $('.customAlert').css('animation', 'none');
+            $('.customAlert').css('display', 'none');
+          }, 300);
 
- 
-  
-  //Thanks to the following for help:
-  // * https://codepen.io/johnludena/pen/JvMvzB
-  // * https://codepen.io/jenning/pen/JZzeJW
+          //currentCallback();
+          $(".imageDiv").show();
+          $("#bot-box").show();
+          $("#top-container").show();
+        })
 
-  var data = {
-      headerText: "BAYMAX✨",
-      pText: "I'm one (1) cute bot!",
-    
-      userMessages: [],
-      botMessages: [],
-      botGreeting: "oh hi!"+this.state.name,
-      botLoading: true
      
-    };
-   
-    
-    class App extends React.Component {
-      constructor(props) {
-        super(props);
-    
-        this.state = data;
+        // our custom alert box
+        setTimeout(function () {
+          let reason = prompt("Reason?", "");
+          localStorage.setItem('Reason', reason)
+          alert("To start Chat Say Hello!");
+        }, 1000);
+      });
 
-        
-      }
-    componentDidMount(){
-     
-    }
-
-updateUserMessages = newMessage => {
-  
-  if (!newMessage){
-    return;  
-  }
-  
-  var updatedMessages = this.state.userMessages;
-
-  var updatedBotMessages = this.state.botMessages;
-  
-    
-  this.setState({
-    userMessages: updatedMessages.concat(newMessage),
-    botLoading: true
-  });
-  console.log(this.state.botLoading);
-      const newUser = {
-  
-          message: newMessage,
-          
+        this.endsess=this.endsess.bind(this);
         }
+      endsess(){
       
-        console.log(newMessage)
-                bot(newUser).then(res => {
-                 
-                  var botResponse = res[0].text;
-          this.setState({
-            botMessages: updatedBotMessages.concat(botResponse),
-            botLoading: false
-          });
-          console.log(this.state.botLoading);
-    
-                    });
-                   
-                   
-                  }
-  
-    scrollBubble = element => {
-      if (element != null) {
-        element.scrollIntoView(true);
+    var t= localStorage.getItem('usertoken')
+    var date=[];
+    var statu=[];
+    var decoded = jwt(t);
+    const senderID = {
+    userid: decoded.identity.id
+
+  }  
+
+  status(senderID).then(response => {
+ 
+    for(var i=0;i<response.result.length;i++){
+
+        date.push(response.result[i].date.slice(5,16));
+       
+        statu.push(response.result[i].status);
       }
-    };
-      showMessages = () => {
-      
-        var userMessages = this.state.userMessages;
-        var botMessages = this.state.botMessages;
     
-        var allMessages = [];
-   
+      localStorage.setItem("dat", JSON.stringify(date));
+      localStorage.setItem("sta", JSON.stringify(statu));
+ 
+  })
+  setTimeout(()=>{
+    this.props.history.push(`/status`);
+  },2000);
+  }
+    componentDidMount() {
+      
+      $('#End').hide();
+      //Make the DIV element draggagle:
+      dragElement(document.getElementById("mydiv"));
+
+      function dragElement(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.getElementById(elmnt.id + "header")) {
+          /* if present, the header is where you move the DIV from:*/
+          document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+        } else {
+          /* otherwise, move the DIV from anywhere inside the DIV:*/
+          elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // get the mouse cursor position at startup:
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          document.onmouseup = closeDragElement;
+          // call a function whenever the cursor moves:
+          document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // calculate the new cursor position:
+          pos1 = pos3 - e.clientX;
+          pos2 = pos4 - e.clientY;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          // set the element's new position:
+          elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+          elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+        function closeDragElement() {
+          /* stop moving when mouse button is released:*/
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+      }
+      $(".imageDiv").hide();
+      $("#top-container").hide();
+      $("#bot-box").hide();
+      $(document).ready(function ($) {
+        window.addEventListener("beforeunload", (ev) => {
+
+          ev.preventDefault();
+          return ev.returnValue = 'Are you sure you want to close?';
+
+        });
+       
+      });
+  
+      
         
-        var i = 0;
-        for (; i < userMessages.length; i++) {
-          if (i === userMessages.length - 1) {
-            //if bot replied to last message
-            if (botMessages[i]) {
-              allMessages.push(<UserBubble message={userMessages[i]} />);
-              allMessages.push(
-                <BotBubble message={botMessages[i]} thisRef={this.scrollBubble} />
-              );
-            } else {
+
+      function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } // Check out the final version LIVE on Github!
+
+      class App extends Component {
+
+        constructor(props) {
+          super(props); _defineProperty(this, "updateTimer",
+
+            () => {
+
+              this.setState({
+                overlayStatus: 'active'
+              });
+
+            }); _defineProperty(this, "updateUserMessages",
+
+              newMessage => {
+
+                // Create a new array from current user messages
+                var updatedUserMessagesArr = this.state.userMessages;
+
+                // Create a new array from current bot messages
+                var updatedBotMessagesArr = this.state.botMessages;
+
+                // Render user message and bot's loading message
+                this.setState({
+                  userMessages: updatedUserMessagesArr.concat(newMessage),
+                  botLoading: true
+                });
+
+                var t = localStorage.getItem('usertoken')
               
-              allMessages.push(
-                <UserBubble message={userMessages[i]} thisRef={this.scrollBubble} />
+                var decoded = jwt(t);
+                this.state.id = decoded.identity.id;
+                const newUser = {
+                  sender:this.state.id,
+                  message: newMessage,
+
+                }
                 
-              );
-            }
-            break;
+                bot(newUser).then(res => {
+
+
+                  var botResponse = res[0].text;
+                
+                  if(botResponse=="Bye"||botResponse=="Alright then take care. Let's talk again sometime :)"){
+                  
+                    $('#bot-box').hide();
+                    setTimeout(()=>{
+    
+                    $('#End').show();           
+                    },7000);
+                  }
+                  // Update state with both user and bot's latest messages
+                  this.setState({
+                    botMessages: updatedBotMessagesArr.concat(botResponse),
+                    botLoading: false
+                  });
+
+
+                });
+
+
+              });
+
+          var t = localStorage.getItem('usertoken')
+
+          var decoded = jwt(t);
+
+          var botGreeting = "Hi " + decoded.identity.first_name;
+          this.state = { userMessages: [], botMessages: [], botGreeting, botLoading: false, overlayStatus: '', timer: { minutes: 30, seconds: 0 } };
+
+        }
+
+        showMessages() {
+
+          var userConvo = this.state.userMessages;
+
+          // Show initial bot welcome message
+          if (this.state.userMessages.length === 0) {
+            return;
           }
-        
-          allMessages.push(<UserBubble message={userMessages[i]} />);
-          allMessages.push(<BotBubble message={botMessages[i]} />);
-        }
-    
-        allMessages.unshift(
-          <BotBubble
-            message={this.state.botGreeting}
-            thisRef={i === 0 ? this.scrollBubble : ""}
-          />
-        );
-    
-        return <div className="msg-container">{allMessages}</div>;
-      };
-    
-      onInput = event => {
-   
 
-        if (event.key === "Enter") {
-          var userInput = event.target.value;
-    
-          this.updateUserMessages(userInput);
-          event.target.value = "";
-        }
-        
-        if (event.target.value!=""){
-          event.target.parentElement.style.background = 'rgba(69,58,148,0.6)';
-        }
-        else{
-          event.target.parentElement.style.background = 'rgba(255, 255, 255, 0.6)';
-        }
-      };
-    
-      onClick = () => {
-        var inp = document.getElementById("chat");
-        var userInput = inp.value;
-        
-    
-        this.updateUserMessages(userInput);
-        inp.value = "";
-      };
+          var updatedConvo = userConvo.map((data, index) => {
 
-      render() {
-        return (
-          
-          <div className="app-container">
+            var botResponse = this.state.botMessages[index];
 
-            {/* <Header
-              headerText={this.state.headerText}
-              pText={this.state.pText}
-              p2Text={this.state.p2Text}
-            /> */}
-            <div className="chat-container">
-        
-              <ChatHeader />
-              {this.showMessages()}
-              <UserInput onInput={this.onInput} onClick={this.onClick} />
-            </div>
-          </div>
-        );
-      }
-    }
-    
-    class UserBubble extends React.Component {
-      constructor() {
-        super()
-        this.state = {
-          letter:''
+            return (
+              React.createElement("div", { className: "conversation-pair", key: 'convo' + index },
+                React.createElement(UserBubble, { message: data, key: 'u' + index }),
+                React.createElement(BotBubble, { message: botResponse, key: 'b' + index })));
+
+          });
+
+          return updatedConvo;
+
         }
 
-        var t= localStorage.getItem('usertoken')
-        var decoded = jwt(t);
-        
+        render() {
 
-        this.state.letter=decoded.identity.email.charAt(0).toUpperCase();
-        }
-    
-    
-     
-      render() {
-        return (
-          <div className="user-message-container" ref={this.props.thisRef}>
-            <div className="user-avatar" >{this.state.letter}</div>
-
-            <div className="chat-bubble user">
-            
-              {this.props.message}
-            </div>
-          </div>
-        );
-      }
-    }
-    
-    class BotBubble extends React.Component {
-    componentDidMount(){
-   
-    }
-      render() {
-        return (
-          <div className="bot-message-container" ref={this.props.thisRef}>
-            <div className="bot-avatar" />
-            
-            <div className="chat-bubble bot">
-                         {this.props.message}
-              
-            </div>
-          </div>
-        );
-      }
-    }
-    
-   
-    
-    var ChatHeader = props => {
-      return (
-        <div className="chat-header">
-          <div className="dot" />
-          <div className="dot" />
-          <div className="dot" />
-        </div>
-      );
-    };
-    
-    var UserInput = props => {
-      return (
-        <div className="input-container">
-          <input
-            id="chat"
-            type="text"
-            onKeyPress={props.onInput}
-            placeholder="type something"
-            autoComplete="off"
-          />
-          <button className="input-submit" onClick={props.onClick} />
-        </div>
-      );
-    };
-    
-    ReactDOM.render(<App />, document.getElementById("main-div"));
-    
-    
-   
-
-
-
-    class SidebarRectangle extends React.Component {
-      constructor() {
-        super()
-        this.state = {
-          expanded: false,
-          showModal: false
-        }
-        this.handleOpenModal = this.handleOpenModal.bind(this);
-        this.handleCloseModal = this.handleCloseModal.bind(this);
-    }
-
-    componentWillMount() {
-      ReactModal.setAppElement('body');
-  }
-
- 
-  componentDidMount(){
-    const token = localStorage.usertoken
-    const decoded = jwt_decode(token)
-    this.setState({
-        first_name: decoded.identity.first_name,
-        last_name: decoded.identity.last_name,
-        email: decoded.identity.email,
-   
-    })
-
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#imagePreview').css('background-image', 'url('+e.target.result +')');
-                $('#imagePreview').hide();
-                $('#imagePreview').fadeIn(650);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-    $("#imageUpload").change(function() {
-        readURL(this);
-    });
-
-  }
-
-  handleOpenModal () {
-    console.log("hdhsfhdsd");
-    this.setState({ showModal: true });
-    
-  }
-  
-  handleCloseModal () {
-    this.setState({ showModal: false });
-  }
-
-      render(){
-        return (
-          <div className={this.props.active ? "square-left active" : "square-left hide"}>
-            {/* {sidebarOptions.map((option, index) => {
-              return (
-                <div key={index} className="sidebar-element">
-    <i className={"fa "+ option.icon} aria-hidden="true"></i><a onClick={this.handleOpenModal}>{option.name}</a></div>
-                )
-            })} */}
-            <a href="/"><i className="fa fa-home">Home</i> </a>
-            <a onClick={this.handleOpenModal}><i className="fa fa-user">Profile </i></a>
-           
-            <a to="/settings"><i className="fa fa-cogs">Settings</i> </a>
-  
-            <a href="/status"><i className="fa fa-check">Status </i> </a>
-
-
-               <ReactModal 
-           isOpen={this.state.showModal}
-           contentLabel="Minimal Modal Example"
-           className="Modal"
-           overlayClassName="Overlay"
-           onRequestClose={this.handleCloseModal}
-        >
-         
-    
-<div className="flip-card">
-  <div className="flip-card-inner">
-    <div className="flip-card-front">
-    <div className="side">
-   
-   <div className="avatar-upload">
-      
-       <div className="avatar-preview  ">
-           <div id="imagePreview" >
-           </div>
-       </div>
-   </div></div>
-   <div className="pf-txt">
-     <h2 className="name-txt">usama </h2>
-     <h2 className="name-txt">usama </h2>
-     <h2 className="name-txt">usama </h2>
-     <h2 className="name-txt">usama </h2>
-   </div>
-    </div>
-    <div className="flip-card-back">
-    <div className=" back-avt"> </div>
-    <div className="edt">
-    <a href="/settings" id="edt-btn"  className="edit-btn"  ><i className="fas fa-edit"></i>Edit</a>
-    
-    </div>
-    <div className="cls">
-    <a className="close-btn" onClick={this.handleCloseModal}><i className="far fa-window-close">Close</i></a>
-    </div>
-    </div>
-  </div>
-  </div>          
-  
-  
-{/*     
-  <div className="card-container">
-  <div className="card">
-  
-               
-            
-          
-    <div className="side">
-   
-    <div className="avatar-upload">
-       
-        <div className="avatar-preview  ">
-            <div id="imagePreview" >
-            </div>
-        </div>
-    </div></div>
-    <div className="pf-txt">
-      <h2 className="name-txt">usama </h2>
-      <h2 className="name-txt">usama </h2>
-      <h2 className="name-txt">usama </h2>
-      <h2 className="name-txt">usama </h2>
-    </div>
-    <div className=" back-avt"> </div>
-    <div className="edt">
-    <a id="edt-btn"  className="edit-btn" onClick={this.editmodal} ><i className="fas fa-edit"></i>Edit</a>
-    
-    </div>
-    <div className="cls">
-    <a className="close-btn" onClick={this.handleCloseModal}><i className="far fa-window-close">Close</i></a>
-    </div>
-  </div>
-</div> */}
-
-                                   
-
-         
-        </ReactModal>
-
-       
-          </div>
-        )
-      }
-    }
-    class MainRectangle extends React.Component {
-      constructor(){
-        super();
-        this.state = {
-          active: false
-        };
-        this.expandSidebar = this.expandSidebar.bind(this);
-      }
-      expandSidebar(){
-        this.setState({active: !this.state.active});
-        console.log(this.state.active);
-      }
-      render(){
-        return (
-        <div className="center">
-          <SidebarRectangle active={this.state.active} />
-    
-        
-              <span className="header-notification clickable" onClick={this.expandSidebar}><i className="fa fa-bars" aria-hidden="true">Menu</i></span>
-            
-            
-          
-    
-          </div>
-      
-        )
-      }
-    }
-    class Application extends Component {
-      render() {
-        return(
-          <div>
-            <MainRectangle />
-          </div>
-          )
-      }
-    }
-    
-    ReactDOM.render(<Application />, document.getElementById('p'));
-
-  }
-          
-
-
-      render () {
           return (
-          <div className="back">
-              
-              <div className="background"></div>
-              <div id="main-div"></div>
-              
-              <div id="p"></div>
-            
-              </div>
-              
-          )
+
+                React.createElement("div", { id: "app-container" },
+                React.createElement("div", { className: "convo-container" },
+                React.createElement(BotBubble, { message: this.state.botGreeting, key: "bot-00" }),
+                this.showMessages()),
+                React.createElement(UserInput, { userMessage: this.state.userMessage, updateUserMessages: this.updateUserMessages })));
+
+        }
+      } 
+
+
+      class UserBubble extends React.Component {
+
+        render() {
+          var t = localStorage.getItem('usertoken')
+
+          var decoded = jwt(t);
+
+          var letter = decoded.identity.email.charAt(0).toUpperCase();
+
+          var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
+          return (
+            React.createElement("div", { className: "user-message-container" },
+
+              React.createElement("div", { className: "user-avt" }, <span className="lett">{letter}</span>),
+              React.createElement("div", { className: "chat-bubble user" }, this.props.message, <div className="user-tme">{time}</div>)
+            )
+          );
+
+
+        }
       }
+
+      class BotBubble extends React.Component {
+        constructor(...args) {
+          super(...args); _defineProperty(this, "componentDidMount",
+
+            () => {
+
+              var lastBubble = this.refs.chatBubble;
+              lastBubble.scrollIntoView(true);
+            });
+        }
+
+        render() {
+
+          var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
+          return (
+            React.createElement("div", { className: "bot-message-container" },
+              React.createElement("div", { className: "img-avatar-container" },
+                React.createElement("img", { className: "bot-avatar", src: "https://www.mytravelresearch.com/wp-content/uploads/2017/09/Travel-Chatbots.jpg", alt: "bot avatar" })),
+
+
+              React.createElement("div", { className: "chat-bubble bot", ref: "chatBubble" }, this.props.message ? this.props.message : <div id="wave">
+                <span className="dot"></span>
+                <span className="dot"></span>
+                <span className="dot"></span>
+
+              </div>, <span className="tme">{time}</span>
+
+              )
+            )
+          );
+        }
+      }
+
+
+      class UserInput extends React.Component {
+        constructor(...args) {
+          super(...args); _defineProperty(this, "handleChange",
+
+            event => {
+
+              if (event.key === 'Enter') {
+                var userInput = event.target.value;
+
+                // update state on parent component
+                this.props.updateUserMessages(userInput);
+                event.target.value = '';
+              }
+            });
+        }
+
+        render() {
+          var submitIcon = <svg onClick={this.handleClick} id="submit-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 500 500"><g><g><polygon fill="#7c7c82" points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75"></polygon></g></g></svg>
+          return (
+            <div className="input-wrapper">
+              <div className="input-container">
+                <input id="chat" ref={(input) => { this.chatInput = input; }} type="text" onKeyPress={this.handleChange} placeholder="Type and press 'enter' to chat" />
+                {submitIcon}
+              </div>
+            </div>
+
+          );
+
+
+        }
+      }
+
+
+      ReactDOM.render(React.createElement(App, null), document.getElementById('bot-box'));
+
+    }
+
+
+    render() {
+
+
+      return (
+
+
+          <div className="App">
+          <div className="imageDiv image1"></div>
+          <div className="imageDiv image2 fadeInClass"></div>
+          <div className="imageDiv image3 "></div>
+          <div className="imageDiv image4 fadeInClass"></div>
+          <div id="mydiv">
+            <div id="mydivheader">Facial Recognizition Demo By USAMA</div>
+            <iframe width="560" height="415" src="http://127.0.0.1:5000/" className="frm"></iframe>
+          </div>
+          <div className='customAlert'>
+            <p className='message'></p>
+            <input type='button' className='confirmButton sayhello' value='Say Hello' />
+          </div>
+          <div id="top-container"></div>
+          <div id="bot-box">
+          </div>
+          <div id="End">
+          <input type='button' className='confirmButton endSession ' value='SESSION END ClLICK ME' onClick={this.endsess} />
+          </div>
+
+        </div>
+
+      )
+    }
+
   }
 
-  export default withRouter(Chat)
+  export default withRouter(Settings)

@@ -1,23 +1,17 @@
+//imports
 import React, { Component } from 'react'
-import jwt_decode from 'jwt-decode'
-import ReactDOM from 'react-dom'
-import { Link } from 'react-router-dom';
-import $, { timers } from 'jquery'
 import jwt from 'jwt-decode'
+import $ from 'jquery'
 import {deleteAccount} from './UserFunctions'
 import DatePicker from "react-date-picker";
 import "react-datepicker/dist/react-datepicker.css";
-import ReactModal from 'react-modal';
 import { updatepass } from './UserFunctions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { checkpassword } from './UserFunctions';
-import ReactCodeInput from 'react-verification-code-input';
-import PinInput from "react-pin-input";
-import Countdown from "react-countdown-now";
-import OtpInputCard from 'react-otp-input';
 import { emailcheck } from './UserFunctions';
 import { updatee } from './UserFunctions';
+import{deleteAllData} from './UserFunctions'
 
 class Profile extends Component {
   constructor() {
@@ -36,7 +30,13 @@ class Profile extends Component {
       password: '',
       nwdob: new Date,
       gender: '',
-      delpass:''
+      delpass:'',
+      initStatus:'',
+      user_id:'',
+      life_threat:'',
+      serious_injury:'',
+      highProb:'',
+      statusnote:''
 
     }
     this.gettoken();
@@ -56,11 +56,26 @@ class Profile extends Component {
     this.deleteNan=this.deleteNan.bind(this);
     this.deleteAccPass=this.deleteAccPass.bind(this);
     this.onChange=this.onChange.bind(this);
+
+    //Initial Status
+    this.state.life_threat="\"The user is suffering either from a natural disaster, serious accident, warzone or sexual harrasment.\"";
+    this.state.serious_injury="\"The user is suffering either from chronic illness, physical abuse, sexual abuse or witnessed death.\"";
+    this.state.highProb="\"The user has either been involved in a violent incident or near death event.\"";
+    if(this.state.initStatus=="An incident involving a life threatning event has occurred"){
+      this.state.statusnote=this.state.life_threat;
+    }
+    else if(this.state.initStatus=="An incident has caused a serious injury"){
+      this.state.statusnote=this.state.serious_injury;
+    }
+    else if(this.state.initStatus=="Suffering from severe Post Trumatic Stress Disorder"){
+      this.state.statusnote=this.state.highProb;
+    }
+   
   }
 
   gettoken() {
     var t = localStorage.getItem('usertoken')
-    var p = localStorage.getItem('password')
+    var initSta = localStorage.getItem('InitialStatus')
     var decoded = jwt(t);
     this.state.first_name = decoded.identity.first_name;
     this.state.email = decoded.identity.email;
@@ -68,58 +83,68 @@ class Profile extends Component {
     this.state.id = decoded.identity.id;
     this.state.dob = decoded.identity.dob.slice(0, 10);
     this.state.gender = decoded.identity.gender;
-
+    this.state.initStatus = initSta;
     this.state.age = decoded.identity.age;
-    console.log("usama" + this.state.email);
-    console.log("usama" + this.state.first_name);
-    console.log("usama" + this.state.dob);
-    console.log("usama" + this.state.id);
+    this.state.user_id=decoded.identity.id;
 
   }
+
+  //delete Account Form
   deleteAccount(){
     $('#updateform').hide();
     $('#delete-btn').hide();
     $('#deleteAlert').show();
-    window.localStorage.clear();
-    this.props.history.push(`/`)
+    
   }
 
+  //Delete Confirmation
   deleteConfirm(){
-    console.log("delete done");
     $('#deleteAlert').hide();
     $('#deletePass').show();
   }
 
+  //Delete Confirm Cancel
   deleteNan(){
-    console.log("delete Nan");
     $('#updateform').show();
     $('#deleteAlert').hide();
     $('#delete-btn').show();
   }
 
+ //Delete Account By Password Api Call
   deleteAccPass(){
-    console.log("delpass"+this.state.delpass);
     const User = {
       email: this.state.email,
       password: this.state.delpass
   }
     deleteAccount(User).then(res => {
            
-      if (!res.error) {
-         toast.success("Success Notification !", {
-              position: toast.POSITION.TOP_RIGHT
-            });
-
-            
-           
+      if (res=="Delete Successfully") {
+      
+        const User = {
+          userID:this.state.user_id
       }
-      else{
+        deleteAllData(User).then(res => {
+           
+          if (res=="Delete Successfully") {
+            
+             toast.success("Success Notification !", {
+                  position: toast.POSITION.TOP_RIGHT
+                });
+    
+                window.localStorage.clear();
+                this.props.history.push(`/`)
+          }   
+        });  
+      }
+      else  if (res=="Nan" || res=="No results found"){
           toast.error("Error!", {
               position: toast.POSITION.CENTER_CENTER
             });
           }
+          this.setState({ delpass: "" });
     });
   }
+
   componentDidMount() {
     $('#deletePass').hide();
     $('#dobb').hide();
@@ -130,15 +155,15 @@ class Profile extends Component {
     $('#nwpassslbl').hide();
     $('#updatepass-btn').hide();
   }
+  //onChange any field value
   change(e) {
 
 
     $('#update-btn').show();
-
     this.setState({ [e.target.name]: e.target.value })
-
-    console.log("chanegpassword reg" + this.state.chk);
   }
+
+  //onChange Password field value
   oldpas(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
@@ -147,32 +172,45 @@ class Profile extends Component {
     $('#updatepass-btn').show();
   }
 
+  //updte Password Api Call
   updatepass() {
     if (this.state.newpassword != "") {
-      const updUserpass = {
+        const updUserpass = {
         password: this.state.newpassword,
 
         id: this.state.id
       }
       updatepass(updUserpass).then(res => {
         this.state.updateres = res;
-        console.log(this.state.updateres);
-
+      
+      if(this.state.updateres=="password update"){
+        toast.success("Password Update Successfully", {
+          position: toast.POSITION.CENTER_CENTER
+        });
+        setTimeout(()=>{
+          localStorage.clear();
+          this.props.history.push(`/login`);
+        },1000);
+      }else{
+        alert("Error Update");
+        this.state.newpassword="";
+      }
 
       })
     }
     else {
-      alert("Passwordfield empty");
+      alert("Password Empty");
     }
   }
 
+  //If DOB Change shows DatePicker
   edtdob() {
     $('#dobb').show();
   }
-  changepass() {
-    console.log("chanegpassword" + this.state.nwdob);
 
-    this.state.chk = false;
+  //Password change func
+  changepass() {
+   this.state.chk = false;
     $('#content1').hide();
     $('#content2').toggle();
 
@@ -180,17 +218,14 @@ class Profile extends Component {
 
   }
 
+  //Get NEw Passwword func Api call
   newpasss() {
-    console.log(this.state.oldpassword);
     const newUser = {
       email: this.state.chkmail,
 
       password: this.state.oldpassword
     }
-    console.log(this.state.chkmail);
     checkpassword(newUser).then(res => {
-
-      console.log(res);
       if (res == "Matched") {
         $('#nwpassslbl').show();
         $('#nwpasss').show();
@@ -204,8 +239,9 @@ class Profile extends Component {
 
 
   }
+
+  //Updtae button func api call
   in() {
-    console.log("in" + this.state.password);
     const updUser = {
       first_name: this.state.first_name,
       dob: this.state.dob,
@@ -215,11 +251,22 @@ class Profile extends Component {
     }
     updatee(updUser).then(res => {
       this.state.updateres = res;
-      console.log(this.state.updateres);
-
+if(this.state.updateres=="Update Successsfully"){
+  toast.success("Update Successfully", {
+    position: toast.POSITION.CENTER_CENTER
+  });
+  setTimeout(()=>{
+    localStorage.clear();
+    this.props.history.push(`/login`);
+  },1000);
+}else{
+  alert("Error Update");
+}
 
     })
   }
+
+  //Before Update button fucn call check if email changes it is already exist or not 
   update() {
 
     if (this.state.email != this.state.chkmail) {
@@ -228,13 +275,9 @@ class Profile extends Component {
         email: this.state.email,
 
       }
-      console.log(this.state.email);
-
       emailcheck(newUser).then(res => {
         this.em = res
-        console.log("mail" + this.em);
         if (this.em == "Not Found") {
-          console.log("Not F")
           toast.error("Email Not Exists", {
             position: toast.POSITION.CENTER_CENTER
           });
@@ -242,8 +285,7 @@ class Profile extends Component {
 
         }
         else {
-          alert("EmailExist");
-          console.log("Found")
+          alert("Email Already Exist");
         }
 
       })
@@ -255,15 +297,6 @@ class Profile extends Component {
 
     }
 
-
-
-  }
-
-
-  onSubmit() {
-    console.log(this.state.first_name);
-    console.log(this.state.email);
-    console.log(this.state.dob);
 
 
   }
@@ -463,13 +496,18 @@ class Profile extends Component {
                                 <fieldset id="deletePass" className="fldst5">
                                 <div className="col-sm-3 col-md-3 col-lg-3">   <a href="/profile" className="back-lnk">
                                   <i className="fas fa-backward back-btn" ></i></a> </div>
-                                <input type="text"
+                                  <div className="col-sm-3 col-md-3 col-lg-3"> Password </div>
+                                      <div className="col-sm-8 col-md-8 col-lg-8">
+
+                                <input type="password"
                                           className="form-control  "
                                           name="delpass"
                                           
                                          value={this.state.delpass}
                                           onChange={this.onChange}
                                           autoComplete="off" />
+                                          </div>
+                                          <div className="col-sm-1 col-md-1 col-lg-1"></div>
                                             <button  type="button" className="  btn-danger btn-block del" onClick={this.deleteAccPass} >
                                          Delete Account
                             </button>
@@ -593,7 +631,8 @@ class Profile extends Component {
                                 <form >
                                   <fieldset className="fldst5">
                                     <legend>Current Status</legend>
-
+                                    <h3>{this.state.initStatus}</h3>
+                                    <p>{this.state.statusnote}</p>
                                   </fieldset>
                                 </form>
 
@@ -617,299 +656,9 @@ class Profile extends Component {
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
-        {/* <div className="row row-content">
-
-       <div className="col-12 col-sm-12 col-md-6 col-lg-6 ">  <div className="container-fluid"><div className="mainn w3-hover-opacity-off ">
-   <div className="clrrr"></div>
-   <div>
-<div className="flip-card flip-crd ">
-  <div className="flip-card-inner">
-    <div className="flip-card-front">
-     <h1 className="crd-frnt-txt">Personal </h1>
-    </div>
-    <div className="flip-card-back w3-hover-opacity-off ">
-   <div id="content1" className="content">  
-   <div className="container-fluid">
-     <form >    
-    <div className="row row-mrgn">
-    <div className="col-sm-3 col-md-3 col-lg-3"> Name </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                    
-                        
-        <input type="text"
-                                    className="form-control"
-                                   name="first_name"
-                                    placeholder={this.state.first_name}
-                                    defaultValue={this.state.first_name}
-                                    onChange={this.change}  
-                                    
-                                    autoComplete="off" />      
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-
-                            <div className="row row-mrgn">
-    <div className="col-sm-3 col-md-3 col-lg-3"> Email </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <input type="text"
-                                    className="form-control  "
-                                   name="email"
-                                    placeholder={this.state.email}
-                                    defaultValue={this.state.email}
-                                    
-                                    onChange={this.change}
-                                 
-                                    autoComplete="off" />      
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-
-                         
-                            <div className="row row-mrgn">
-    <div className="col-sm-3 col-md-3 col-lg-3"> DOB </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <input type="text"
-                                    className="form-control  "
-                                   name="dob"
-                                    placeholder={this.state.dob}
-                                    defaultValue={this.state.dob}
-                                    onChange={this.change}
-                                   
-                                    
-                                    autoComplete="off" />      
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-
-                            <div className="row row-mrgn">
-    <div className="col-sm-3 col-md-3 col-lg-3"> Age </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <input type="text"
-                                    className="form-control  "
-                                   name="age"
-                                    placeholder={this.state.age}
-                                    defaultValue={this.state.age}
-                                    readOnly={true}
-                                    autoComplete="off"/>      
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-
-                            <div className="row row-mrgn">
-    <div className="col-sm-3 col-md-3 col-lg-3">  </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <button id="button" type="button" className="btn btn-lg btn-primary btn-block  " onClick={this.changepass}>
-                                Change Password
-                            </button>
-                           
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-                         
-
-                          
-
-                            <div className="row row-mrgn">
-    <div className="col-sm-3 col-md-3 col-lg-3">  </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <button id="update-btn" type="button" className="btn btn-lg btn-primary btn-block "  onClick={this.update}>
-                                Update
-                            </button>
-                           
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-                            </form>
-                            </div>
-
-<div id="content2">
-<a href="/profile" className="back-lnk">
-            <i className="fas fa-backward back-btn" ></i></a>
-                            <div className="row row-mrgn">
-    <div id="oldpassslbl" className="col-sm-3 col-md-3 col-lg-3"  > Old Password </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <input  type="password"
-        id="passs"
-                                    className="form-control  "
-                                   name="oldpassword"
-                                    placeholder=""
-                                   onChange={this.oldpas}
-                            onBlur={this.newpasss}
-                                    autoComplete="off" />      
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-
-                            <div className="row row-mrgn">
-    <div id="nwpassslbl" className="col-sm-3 col-md-3 col-lg-3 " > New Password </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <input  type="password"
-        id="nwpasss"
-                                    className="form-control  "
-                                   name="newpassword"
-                                    placeholder=" "
-                                    value={this.state.newpassword}
-                                    onChange={this.newpass}
-                                   
-                         
-                                    autoComplete="off" />      
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-                           < div className="row row-mrgn">
-    <div className="col-sm-3 col-md-3 col-lg-3">  </div>
-        <div className="col-sm-8 col-md-8 col-lg-8"> 
-                           
-                        
-        <button id="updatepass-btn" type="button" className="btn btn-lg btn-primary btn-block " onClick={this.updatepass} >
-                                Update Password
-                            </button>
-                           
-                            </div>
-                            <div className="col-sm-1 col-md-1 col-lg-1"></div>
-                            </div>
-                            </div>
-                            </div>             
-    </div>
-  </div>
-</div></div>
-    
-   </div></div>
-       <div className="col-sm-12 col-md-6 col-lg-6 "> <div className="mainn w3-hover-opacity-off main1">
-       <div className="clrrr"></div>
-   <div><div className="flip-card flip-crd ">
-  <div className="flip-card-inner">
-    <div className="flip-card-front">
-    <h1 className="crd-frnt-txt" >Status </h1>
-    </div>
-    <div className="flip-card-back w3-hover-opacity-off ">
-      <h1>{this.state.first_name}</h1> 
-      <p>{this.state.first_name}</p> 
-      <p>We love that guy</p>
-    </div>
-  </div>
-</div></div>
-  
-                </div></div> */}
-
-        {/* <div className="col-sm-4 col-md-10 col-lg-4 ">
-           
-           
-                                     
-           <div className="main w3-hover-opacity-off">
-   
-          <div className="content">
-              
-              <div className="row rw-mr">
-              <Link to='/' className="back-lnk">
-              <i className="fas fa-backward back-btn"></i></Link>
-              <div className="head reg-hd"><h1>Update Profile</h1></div>
-                  </div>
-          
-            <div className="row rw">
-                
-            <div className="col-sm-4 col-md-10 col-lg-10 ">
-          
-            <form  >
-                               
-                               <div className="form-group">
-                             
-        
-                                  <input type="text"
-                                  id="name"
-                                      className="form-control in-css "
-                                      name="first_name"
-                                      placeholder=""
-                                      value={this.state.first_name}
-                                      onChange={this.onChange} 
-                                      autoComplete="off" required/>
-                                         <label className="form-control-placeholder" htmlFor="name">Nick Name</label>
-                              </div>
-                             
-          
-         
-       
-                           
-                              <div className="form-group">
-                                  
-                                  <input  type="email"
-                                      className="form-control in-css"
-                                      name="email"
-                                      placeholder=""
-                                      value={this.state.email}
-                                      onBlur={this.emailchek}
-                                      onChange={this.onChange} 
-                                      autoComplete="off" required/>
-                                       <label className="form-control-placeholder" htmlFor="email">Email</label>
-                              </div>
-                              
-                              <div className="form-group">
-                                  
-                                  <input type="password"
-                                      className="form-control in-css"
-                                      name="password"
-                                      placeholder=" "
-                                      value={this.state.password}
-                                      onChange={this.onChange} required/>
-                                      <label className="form-control-placeholder" htmlFor="password">Password </label>
-                              </div>
-  
-                              <div className="form-group">
-                                  
-                                  <input id="c" type="password"
-                                      className="form-control in-css"
-                                      name="cpassword"
-                                      placeholder=" "
-                                      value={this.state.cpassword}
-                                      onBlur={this.passcheck}
-                                      onChange={this.onChange} required />
-                                        <label className="form-control-placeholder" htmlFor="cpassword">Confirm Password </label>
-                                      
-                              </div>
-                              <div className="form-group"> <p className="dob">dob</p>  
-          <DatePicker  className="form-control in-css sm-dt"   name="dob"  selected={this.state.dob}
-            value={this.state.dob}
-          onChange={this.handleChange} required/>
-          
-         
-       <div id="app"></div> 
-  
-  </div>
-  
-                              
-                              <button id="button" type="submit" className="btn btn-lg btn-primary btn-block reg-btn" disabled={!this.state.bool} onClick={this.onSubmit}>
-                                  Register
-                              </button>
-                            
-        
-                             </form>
-                             
-                            </div>
-                    </div>
-                </div>  
-          </div>
-        </div> */}
-        {/* </div>
-      </div> */}
       </div>
 
 

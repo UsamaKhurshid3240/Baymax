@@ -12,7 +12,7 @@ import withSplashScreen from './components/withSplashScreen';
 import Chat from './components/chat'
 import Sidemenu from './components/Sidemenu'
 import Status from './components/Status'
-import Settings from './components/settings'
+
 class App extends Component {
   
   render () {
@@ -38,7 +38,7 @@ class App extends Component {
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/questioniar" component={Questioniar} />
             <Route exact path="/status" component={Status} />
-            <Route exact path="/settings" component={Settings} />
+           
            
           </div>
         </div>

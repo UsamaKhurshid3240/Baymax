@@ -1,20 +1,15 @@
+//imports
 import React, { Component,useState } from 'react'
 import { register } from './UserFunctions'
-import ReactDOM from 'react-dom'
 import { sendmail } from './UserFunctions'
 import{emailcheck} from './UserFunctions'
 import DatePicker from "react-date-picker";
 import "react-datepicker/dist/react-datepicker.css";
-import ReactModal from 'react-modal';
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery'
-import ReactCodeInput from 'react-verification-code-input';
 import PinInput from "react-pin-input";
-import Countdown from "react-countdown-now";
-import OtpInputCard from 'react-otp-input';
-
 
 export class Register extends Component {
 
@@ -27,8 +22,6 @@ export class Register extends Component {
             password: '',
             cpassword:'',
             dob: new Date(),
-            showModal: false,
-            showModa:false,
             code:'',
             cd:'',
             disable:true,
@@ -36,16 +29,14 @@ export class Register extends Component {
             ch:false,
             i:1,
             bool:false,
-            selectedOption: ''
+            selectedOption: '',
           
         }
       
+        //Funct Declaration
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.passcheck = this.passcheck.bind(this);
-        this.handleOpenModal = this.handleOpenModal.bind(this);
-        this.resend=this.resend.bind(this);
-        this.handleCloseModal = this.handleCloseModal.bind(this);
         this.codec=this.codec.bind(this);
         this.timer=this.timer.bind(this);
         this.regis=this.regis.bind(this);
@@ -54,10 +45,7 @@ export class Register extends Component {
     }
    
   
-    componentWillMount() {
-        ReactModal.setAppElement('body');
-    }
-
+//Component Did Mount
       componentDidMount(){
         
         $('#content2').hide();
@@ -65,23 +53,15 @@ export class Register extends Component {
         $(document).ready(function(){
          
         $('#button').click( function(e) {
-        
-       //  e.preventDefault(); // stops link from making page jump to the top
-       
-        $('#content2').toggle();
-        $('#nntn').hide();
-        $('#content1').hide();
-        
+ 
     });
  
-    
-    
 });
     }//end of didmount
 
+    //Register Func Api Call
 regis(){
-  console.log(this.state.selectedOption);
-  this.props.history.push(`/login`);
+ 
   const newUser = {
     first_name: this.state.first_name,
     dob: this.state.dob,
@@ -90,15 +70,25 @@ regis(){
     gender: this.state.selectedOption
 }    
   register(newUser).then(res => {
-  
-          
-          console.log("usama"+this.state.dob);
+    if(res=="Registered Successfully"){
+    toast.success("Registeres Successfully", {
+      position: toast.POSITION.CENTER_CENTER
+    });
+    setTimeout(()=>{
+      this.props.history.push(`/login`);
+    },1000);
+  }else{
+    toast.error("Error Register", {
+      position: toast.POSITION.CENTER_CENTER
+    });
+  }
       })
 }
 
+//Set Timer Email Verification Code
  timer= () => {
   
-         // Credit: Mateusz Rybczonec
+      
          $(document).ready(function($) {
 
           if (window.history && window.history.pushState) {
@@ -174,14 +164,33 @@ document.getElementById("app").innerHTML = `
   )}</span>
 </div>
 `;
-
+//Timer start Func
 startTimer();
 var btn = document.createElement("BUTTON");
   btn.innerHTML = "Resend Code";
   btn.className="resend-btn";
   btn.onclick =function(){
     this.timer();
- console.log("usama"  );
+const newUser = {
+  
+    email: this.state.email,
+    
+  }
+ //Email ReSent to Given Email Api Call
+  sendmail(newUser).then(res => {
+  this.cd=res
+  if(this.cd!=""){
+    toast.success("Sent", {
+      position: toast.POSITION.CENTER_CENTER
+    });
+  }else{
+    toast.error("Not Sent", {
+      position: toast.POSITION.CENTER_CENTER
+    });
+  }
+  })
+ 
+ 
   }.bind(this); 
 function onTimesUp() {
   
@@ -256,174 +265,71 @@ function setCircleDasharray() {
 }
 
       }
-// componentDidMount(){
-//   const { Component, Fragment } = React;
-
-// class CountDown extends Component {
-//   state = {
-//     remaining: {
-     
-//       minutes: 0,
-//       seconds: 0
-//     },
-//     isExpired: false
-//   };
-//   // used to set and clear interval
-//   timer;
-//   // used to calculate the distance between "current date and time" and the "target date and time"
-//   distance;
-
-//   componentDidMount() {
-//     this.setDate();
-//     this.counter();
-//   }
-
-//   setDate = () => {
-//     const { targetDate, targetTime } = this.props,
-//       // Get todays date and time
-//       now = new Date().getTime(),
-//       // Set the date we're counting down to
-//       countDownDate = new Date(targetDate + " " + targetTime).getTime();
-    
-//     // Find the distance between now and the count down date
-//     this.distance = countDownDate - now;
-    
-//     // target date and time is less than current date and time
-//     if (this.distance < 0) {
-//       clearInterval(this.timer);
-//       this.setState({ isExpired: true });
-//     } else {
-//       this.setState({
-//         remaining: {
-         
-//           minutes: Math.floor((this.distance % (1000 * 60 * 60 )) / (1000 * 60 )),
-//           seconds: Math.floor((this.distance % (1000 * 60)) / 1000)
-//         },
-//         isExpired: false
-//       });
-//     }
-//   };
-
-//   counter = () => {
-//     this.timer = setInterval(() => {
-//       this.setDate();
-//     }, 1000);
-//   };
-
-//   render() {
-//     const { remaining, isExpired } = this.state,
-//     {targetDate, targetTime} = this.props;
-    
-//     return (
-//       <Fragment>
-//         {!isExpired && targetDate && targetTime ? (
-//           <div className="counter">
-//             {Object.entries(remaining).map((el, i) => (
-//               <div key={i} className="entry">
-//                 <div key={el[1]} className="entry-value">
-//                   <span className="count top curr flipTop">{el[1] + 1}</spautoan>
-//                   <span className="count top next">{el[1]}</span>
-//                   <span className="count bottom next flipBottom">{el[1]}</span>
-//                   <span className="count bottom curr">{el[1] + 1}</span>
-//                 </div>
-//                 <div className="entry-title">{el[0].toUpperCase()}</div>
-//               </div>
-//             ))}
-//           </div>
-//         ) : (
-//           <p className="alert-danger">Expired</p>
-//         )}
-//       </Fragment> 
-//     );
-//   }
-// }
-
-
-// const app = <CountDown targetDate="Oct 25, 2020" targetTime="05:00" />;
-
-// ReactDOM.render(app, document.querySelector("#app"));
-
-// }
-resend(completed){
-  //$('.content').toggle();
-  
-
-  console.log("resend");
- 
-
-}
-
-  
+//Radio Button Value Change
 radioChange(e) {
   this.setState({
     selectedOption: e.currentTarget.value
   });
   
 }
-
+//onSubmit Form Timer Start if all fields are filled
  onSubmit (e) {
   e.preventDefault()
- 
+ if(this.state.first_name!="" && this.state.email!=""&& this.state.dob!=""&& this.state.selectedOption!=""&& this.state.password!="" && this.state.cpassword!=""){
   this.timer();
   
-//this.handleOpenModal()
-
 const newUser = {
   
   email: this.state.email,
   
 }
-console.log(this.state.email);
+//Email Sent to Given Email Api Call
 sendmail(newUser).then(res => {
 this.cd=res
-  console.log("mail"+this.cd);
-  
-  console.log("splice"+this.cd.substr(20,25));
+if(this.cd!=""){
+  toast.success("Sent", {
+    position: toast.POSITION.CENTER_CENTER
+  });
+}else{
+  toast.error("Not Sent", {
+    position: toast.POSITION.CENTER_CENTER
+  });
+}
 })
-
+$('#content2').toggle();
+$('#nntn').hide();
+$('#content1').hide();
+ }
+ else{
+   alert("Please Fill All Fields");
+ }
 
 }
-    onChangecode =  code => {
-     
+
+//onChange Value
+    onChangecode =  code => {     
       this.setState({code})
-      console.log(this.pin.values);
     };
     
+    //onChange Value
     onChange (e) {
         this.setState({ [e.target.name]: e.target.value })
         
     }
-
-    handleOpenModal(){
-      this.setState({showModa:true});
-    }
-
-      
-      handleCloseModal () {
-        this.setState({ showModal: false });
-      }
-
-
+//onChange Value DOB
     handleChange = date => {
         this.setState({
           dob: date
         });
         
-console.log(this.state.selectedOption);
       };
-
+//Verification COde Check
       codec(e){
         this.code=this.pin.values.toString();
-         console.log("code"+this.code);
         var a = this.code.replace(/,/g,"");
-        console.log(a);
         if(this.state.i==5){
           if(a==this.cd.substr(20,25)){
             $('#nntn').toggle();
-
-            
-            console.log("done");
-           console.log("ff");
           }
           else {
             if(a!=""){
@@ -438,57 +344,14 @@ console.log(this.state.selectedOption);
         else{
           
           this.state.i++;
-          console.log("i"+this.state.i);
 
         }
-
-// console.log(this.pin.values);
-// this.code=this.pin.values.toString();
-// console.log("code"+this.code);
-// var a = this.code.replace(/,/g,"");
-// console.log(a);
-// const newUser = {
-//     first_name: this.state.first_name,
-//     dob: this.state.dob,
-//     email: this.state.email,
-//     password: this.state.password
-// }
-
-// if(a==this.cd.substr(20,25)){
- 
-// console.log("done"+this.state.bool);
-// console.log("ff"+a);
-  
-    
-// this.handleCloseModal()
-      //   register(newUser).then(res => {
-            
-      // toast.success("Success Notification !", {
-      //   position: toast.POSITION.TOP_CENTER
-      // });
-      //       this.props.history.push(`/login`)
-      //       console.log("usama"+this.state.dob);
-      //   })
-//     }
-   
-
-// else{
-//   alert("Code Invalid");
-//   toast.error("Error!", {
-//     position: toast.POSITION.CENTER_CENTER
-//   });
-  
-//     console.log("No done");
-// }
-// return this.state.code;
 
 
 
       } 
-
+//Password and confirm password check
      passcheck(e){
-        console.log("pass"+this.state.cpassword);
-        console.log("pass"+this.state.first_name);
         if(this.state.password!='' && this.state.cpassword!=''){
         if(this.state.password!=this.state.cpassword){
           toast.error("Error:Password Not Match!", {
@@ -504,33 +367,29 @@ console.log(this.state.selectedOption);
           position: toast.POSITION.CENTER_CENTER
         });
       }
-    }
-    
+    }   
       }
     
+      //Email check Func It is already exist or not Api Call
       emailchek(e){
         e.preventDefault();
-        console.log("emailcheck");
         const newUser = {
-  
-          email: this.state.email,
-          
+          email: this.state.email,         
         }
-        console.log(this.state.email);
-
-        emailcheck(newUser).then(res => {
+       emailcheck(newUser).then(res => {
         this.em=res.email
-          console.log("mail"+this.em);
           if(this.em=="Not Found"){
-            console.log("Not F")
+          
             toast.success("Email Not Exists", {
               position: toast.POSITION.CENTER_CENTER
             });
             this.state.bool=true;
           }
           else{
-          alert("Email Already exists")
-            console.log("Found")
+            toast.error("Email Already Exists!", {
+              position: toast.POSITION.CENTER_CENTER
+            });
+          this.setState({ email: "" });
           }
           
         })
@@ -539,28 +398,7 @@ console.log(this.state.selectedOption);
 
       render () {
       
-
-// Random component
-const Completionist = () => <button id="button" type="button" className="resend" onClick={this.resend}>Resend</button>;
-//Renderer callback with condition
-const renderer = ({ minutes, seconds, completed }) => {
-  if (completed) {
-    // Render a complete state
- 
-    return <button id="button" type="button" className="resend" onClick={() => this.resend(completed)}>Resend</button>;
-  } else {
-    // Render a countdown
-    return <span><span id="min-left"className="timer">{minutes}</span>  <span className="timer">{seconds}</span></span>
-  }
-};
-
-
-        
         return (
-          
-          
-
-
             <div className="App">
             <div className="imageDiv image1"></div>
             <div className="imageDiv image2 fadeInClass"></div>
@@ -571,44 +409,27 @@ const renderer = ({ minutes, seconds, completed }) => {
             <ToastContainer />
             <div className="row">
             <div className="col-12 col-sm-12 col-md-2 col-lg-3 "></div>
-            <div className="col-12 col-sm-12 col-md-8 col-lg-5 ">
-           
-           
-           
-                                     
+            <div className="col-12 col-sm-12 col-md-8 col-lg-5 ">                            
             <div className="main w3-hover-opacity-off">
-           
-        
             <div id="content2" className="content ">   
                  <div className="container-fluid">
-                 <div className="row ">
-         
-         <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">
-        
+                 <div className="row ">         
+         <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">       
          </div>
          </div>
             <fieldset className="fldst3">
   <legend><h4>Email Sent to {this.state.email}</h4>  </legend>
-  <div className="row ">
-                         
+  <div className="row ">                       
                          <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">
   <div id="app" className="countdown "></div></div>
   </div>
-  
-         <PinInput
-       
+         <PinInput      
           length={5}
           focus
           ref={p => (this.pin = p)}
           type="numeric"
-         onChange={this.codec}
-        //  onChange={this.onChangecode}
+         onChange={this.codec}    
         />
-          
-         
-    
-  
- 
                                      <button id="nntn" className="send-btn" onClick={this.regis}>send</button>
                                    
                                      <div id="app-btn"></div>
@@ -627,28 +448,16 @@ const renderer = ({ minutes, seconds, completed }) => {
           <div className="container-fluid">
           <fieldset className="fldst">
          <legend> <h1>Register</h1></legend>
-        
-         
-           
-
               <div className="row ">
-         
-         <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">
-        
+                 <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">       
          </div>
          </div>
-
-
         <div className="container-fluid">
-        
-        
-          <form  >
+        <form  >
           <div className="row rw2">
          
          <div className="col-12 col-sm-12 col-md-12 col-lg-12 "> 
-                             <div className="form-group">
-                           
-      
+                             <div className="form-group">   
                                 <input type="text"
                                 id="name"
                                     className="form-control  "
@@ -660,16 +469,10 @@ const renderer = ({ minutes, seconds, completed }) => {
                                        <label className="form-control-placeholder" htmlFor="name">Nick Name</label>
                             </div>
                            </div>
-                           </div>
-        
-                            <div className="row ">
-         
-         <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">
-       
-     
-                         
-                            <div className="form-group">
-                                
+                           </div>      
+                            <div className="row ">    
+         <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">                 
+                            <div className="form-group">                            
                                 <input  type="email"
                                     className="form-control"
                                     name="email"
@@ -682,12 +485,9 @@ const renderer = ({ minutes, seconds, completed }) => {
                             </div>
                             </div>
                             </div>
-
-                            <div className="row ">
-         
+                          <div className="row ">
          <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">
-                            <div className="form-group">
-                                
+                            <div className="form-group">                           
                                 <input type="password"
                                     className="form-control "
                                     name="password"
@@ -698,42 +498,28 @@ const renderer = ({ minutes, seconds, completed }) => {
                             </div>
 </div>
 </div>
-
-
-                            <div className="row ">
-         
+                            <div className="row ">      
          <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">
-                            <div className="form-group">
-                                
-                                <input id="c" type="password"
+                            <div className="form-group">                             
+                               <input id="c" type="password"
                                     className="form-control "
                                     name="cpassword"
                                     placeholder=" "
                                     value={this.state.cpassword}
                                     onBlur={this.passcheck}
                                     onChange={this.onChange} required />
-                                      <label className="form-control-placeholder" htmlFor="cpassword">Confirm Password </label>
-                                    
+                                      <label className="form-control-placeholder" htmlFor="cpassword">Confirm Password </label>                                    
                             </div>
                             </div>
                             </div>
-
                             <div className="row ">
                             <div className="col-12 col-sm-12 col-md-2 col-lg-2 "><span className="gen-txt">Dob</span></div>
          <div className="col-12 col-sm-12 col-md-10 col-lg-10 ">
- 
         <DatePicker  className="form-control  "   name="dob"  selected={this.state.dob}
           value={this.state.dob}
         onChange={this.handleChange} required/>
-      
-       
-       
-
-
-
                          </div>
                          </div>
-
                          <div className="row gen-rw">
                          <div className="col-12 col-sm-12 col-md-2 col-lg-2 "><span className="gen-txt">Gender</span></div>
          <div className="col-12 col-sm-12 col-md-10 col-lg-10 ">
@@ -741,43 +527,28 @@ const renderer = ({ minutes, seconds, completed }) => {
                             <input type="radio"
                value="Male"
                checked={this.state.selectedOption === "Male"}
-               onChange={this.radioChange}  />Male
-
+               onChange={this.radioChange}  required/>Male
         <input type="radio"
         className="female"
                value="Female"
                checked={this.state.selectedOption === "Female"}
-               onChange={this.radioChange}/>Female
-                    
+               onChange={this.radioChange} required/>Female                 
       </div>
       </div>
       </div>
-                         <div className="row ">
-         
+                         <div className="row ">        
          <div className="col-12 col-sm-12 col-md-12 col-lg-12 ">   
                             <button id="button" type="submit" className="btn btn-lg btn-primary btn-block " disabled={!this.state.bool} onClick={this.onSubmit}>
                                 Register
-                            </button>
-                                             
+                            </button>                                            
 			</div>
       </div>
-                           </form>
-                           
-                        
-
-                       
-                         </div>
-      
-
-                      
-                        
+                           </form>                
+                         </div>              
                          </fieldset>
                          </div>
       </div>
        </div>
-     
-
-       
       </div>
       <div className="col-12 col-sm-12 col-md-2 col-lg-3 "></div>
      </div>

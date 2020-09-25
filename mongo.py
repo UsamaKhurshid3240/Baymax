@@ -14,14 +14,14 @@ import datetime
 
 app = Flask(__name__)
 app.config.update(
-	DEBUG=True,
-	#EMAIL SETTINGS
-	MAIL_SERVER='smtp.gmail.com',
-	MAIL_PORT=465,
-	MAIL_USE_SSL=True,
-	MAIL_USERNAME = 'baymaxun@gmail.com',
-	MAIL_PASSWORD = '123-baymax.UN'
-	)
+    DEBUG=True,
+    #EMAIL SETTINGS
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=465,
+    MAIL_USE_SSL=True,
+    MAIL_USERNAME = 'baymaxun@gmail.com',
+    MAIL_PASSWORD = '123-baymax.UN'
+    )
 mail = Mail(app)
 app.config['MONGO_DBNAME'] = 'Baymax'
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/baymax'
@@ -58,9 +58,9 @@ def register():
 
     new_user = users.find_one({'_id': user_id})
 
-    result = {'email': new_user['email'] + ' registered'}
+ 
 
-    return jsonify({'result' : result})
+    return jsonify({'result' : "Registered Successfully"})
 
     
 
@@ -71,9 +71,6 @@ def update():
     dob= request.get_json()['dob']
     email = request.get_json()['email']
 
-    print(first_name)
-    print(email)
-    print(dob)
    
     idd = request.get_json()['id']
     now = datetime.datetime.now()
@@ -94,7 +91,7 @@ def update():
    
   
 
-    result = {'email':"ysdh"}
+    result = {'result':"Update Successsfully"}
 
     return jsonify({'result' : result})
 
@@ -114,15 +111,34 @@ def delete():
 
            users.delete_one(myquery)
 
-           result = {'delete':"successfully"}
+           result = {'result':"Delete Successfully"}
         else:
-            result = {"delete":"Nan"}
+            result = {"result":"Nan"}
     else:
         result = {"result":"No results found"}
  
 
     return jsonify({'result' : result})
 
+
+@app.route('/users/delAllData', methods=["POST"])
+def delAllData():
+    users = mongo.db.questionnaire 
+    userstatus = mongo.db.statuses 
+
+    idd = request.get_json()['userID']
+    
+   
+    # Updating fan quantity form 10 to 25. 
+  
+  
+    users.delete_many({"userID": idd})
+    userstatus.delete_many({"userID": idd})
+  
+
+    result = {'result':"Delete Successfully"}
+
+    return jsonify({'result' : result})
     
 @app.route('/users/updatepass', methods=["POST"])
 def update_pass():
@@ -144,7 +160,7 @@ def update_pass():
    
   
 
-    result = {'email':"password update"}
+    result = {'result':"password update"}
 
     return jsonify({'result' : result})
 
@@ -154,18 +170,35 @@ def update_pass():
 
 def send_mail():
 
-		msg = Message("Email Verification",sender="baymaxun@gmail.com",recipients=[str(request.get_json()['email'])])
-		msg.body = "Verification Code : "+str(random.randint(9999,99999))        
-		mail.send(msg)
+        msg = Message("Email Verification",sender="baymaxun@gmail.com",recipients=[str(request.get_json()['email'])])
+        msg.body = "Verification Code : "+str(random.randint(9999,99999))        
+        mail.send(msg)
         
-		return msg.body
-	
+        return msg.body
+    
+
+@app.route('/contact/mail', methods=['POST'])
+
+def contact_mail():
+
+        name = request.get_json()['name']
+        email = request.get_json()['email']
+        message = request.get_json()['message']
+
+        
+        msg = Message("Contact Support",sender="baymaxun@gmail.com",recipients=["baymaxun@gmail.com"])
+        msg.body = "Name :"+name+"\r\n"+"Email : "+email+"\r\n"+"\r\n"+message
+        mail.send(msg)
+        
+        return jsonify({'result' : "Sent Mail"})
+    
+    
 
 @app.route('/email/check', methods=['POST'])
 
 def email_check():
 
-		
+        
 
         
     users = mongo.db.users  
@@ -187,7 +220,7 @@ def email_check():
       
     
 
-    print(result)
+    
 
     return jsonify({'result' : result})
 
@@ -196,7 +229,7 @@ def email_check():
 @app.route('/users/login', methods=['POST'])
 def login():
 
-		
+        
 
         
     users = mongo.db.users 
@@ -216,20 +249,22 @@ def login():
                 'email': response['email'],
                 'id':str(response['_id']),
                 'age':response['age'],
-                'gender':response['gender']
+                'gender':response['gender'],
+                'date':response['created']
             })
+            
             result = jsonify({'token':access_token})
         else:
-            result = jsonify({"error":"Invalid username and password"})
+            result = jsonify({"token":"Invalid username and password"})
     else:
-        result = jsonify({"result":"No results found"})
+        result = jsonify({"token":"No results found"})
  
     return result 
 
 @app.route('/users/chekpass', methods=['POST'])
 def check_pass(): 
 
-		
+        
 
         
     users = mongo.db.users 
@@ -254,10 +289,49 @@ def check_pass():
 
 
 
+@app.route('/users/questionnaire', methods=["POST"])
+def questionnaire():
+    usersques = mongo.db.questionnaire 
+    FinalAns= request.get_json()['FinalAns']
+    userid= request.get_json()['id']
+    
+    
+    now = datetime.datetime.now()
+    
 
+    usersques.insert({
+        'InitialStatus': FinalAns,
+        'userID': userid,
+        'created': now 
+    })
+
+   
+
+    result = jsonify({"result":"Successfully Saved"})
+
+    return result
 
     
 
+@app.route('/users/status', methods=['POST'])
+def status():
+
+        
+
+        
+    users = mongo.db.statuses 
+    userid = request.get_json()['userID']
+    
+   
+    status=[]
+
+    
+    x = users.find({'senderID': userid},{"_id":0,'status': "","date":""})
+    for data in x:
+        status.append(data)
+      
+    result = jsonify({"result":status})
+    return result 
   
 
 if __name__ == '__main__':

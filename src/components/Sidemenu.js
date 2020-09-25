@@ -1,10 +1,9 @@
+//imports
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
 import "../components/sidemenu.scss";
-import ReactModal from 'react-modal';
 import $ from 'jquery'
-import { Link ,withRouter} from 'react-router-dom';
+import { Link} from 'react-router-dom';
+
 class Sidemenu extends Component {
   
     constructor() {
@@ -12,38 +11,37 @@ class Sidemenu extends Component {
         this.state = {
             showModal: false
         }
-        this.handleOpenModal = this.handleOpenModal.bind(this);
-        this.handleCloseModal = this.handleCloseModal.bind(this);
+        //Function Declaration
+        this.logout = this.logout.bind(this);
+        this.yeslog = this.yeslog.bind(this);
+        this.nolog = this.nolog.bind(this);
        
     }
-    componentWillMount() {
-        ReactModal.setAppElement('body');
+
+//Logout Fucn
+    logout(){
+        $(".logoutconfirm").show();
     }
 
-    
-  
-    handleOpenModal () {
-      console.log("hdhsfhdsd");
-      this.setState({ showModal: true });
-      
+//Logout Confirmation 
+//if Yes Fucn
+    yeslog(){
+localStorage.clear();
+        this.props.history.push(`/`)
     }
-    
-    handleCloseModal () {
-      this.setState({ showModal: false });
+
+//if No Fucn
+    nolog(){
+        $(".logoutconfirm").hide();
     }
-    componentDidMount(){
-      
-         
-           
-        
-      
+
+    //ComponentDidMount
+    componentDidMount(){       
+           $(".logoutconfirm").hide();
         $(function() {
-
             $('.main-menu').hover(function() {
               $('.pf-cnt').css('transform', ' perspective(250vh) rotateY(-40deg)');
-              $('.pf-cnt').css('animation', 'fade 0.5s ease 0.2s both');
-             
-             
+              $('.pf-cnt').css('animation', 'fade 0.5s ease 0.2s both');                    
             }, function() {
               // on mouseout, reset the background colour
               $('.pf-cnt').css('transform', 'none');
@@ -66,9 +64,6 @@ class Sidemenu extends Component {
                     </a>
                 </div>
             <ul>
-           
-
-            
             <li className="li-top">
                     <Link to="/profile">
                        <i className="fa fa-user fa-2x"></i>
@@ -91,15 +86,13 @@ class Sidemenu extends Component {
                         <span className="nav-text">
                             Chat
                         </span>
-           </Link>
-                  
-                </li>
-                
+           </Link>                  
+               </li>                
             </ul>
-
             <ul className="logout">
-                <li>
-                   <a href="#">
+                <div className="logoutconfirm">Are You Sure to Logout : <br></br><a href="#" className="yeslog" onClick={this.yeslog}>Yes</a> <a href="#" className="nolog" onClick={this.nolog}>No</a></div>               
+                <li >
+                   <a href="#"  onClick={this.logout}>
                          <i className="fa fa-power-off fa-2x"></i>
                         <span className="nav-text">
                             Logout
@@ -107,8 +100,7 @@ class Sidemenu extends Component {
                     </a>
                 </li>  
             </ul>
-        </nav>
-      
+        </nav>      
         </div>
   
     );

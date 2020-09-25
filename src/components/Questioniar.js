@@ -1,9 +1,12 @@
+//imports
 import React, { Component } from 'react'
 import jwt_decode from 'jwt-decode'
 import './questioniar.scss';
 import $ from 'jquery'
-import Landing from './Landing';
-import { Link } from 'react-router-dom';
+import jwt from 'jwt-decode'
+import {questionnaire} from './UserFunctions'
+import{status} from './UserFunctions' 
+
 class Questioniar extends Component {
     constructor() {
         super()
@@ -11,17 +14,32 @@ class Questioniar extends Component {
             first_name: '',
             last_name: '',
             email: '',
-            lname:''
+            lname:'',
+            Ans1:'',
+            Ans2:'',
+            Ans3:'',
+            Ans4:'',
+            Ans5:'',
+            Ans6:'',
+            Ans7:'',
+            Ans8:'',
+            Ans9:'',
+            Ans10:'',
+            Ans1to3:false,
+            Ans5to7:false,
+            finalstatus:''
         }
         this.onChangee=this.onChangee.bind(this);
         this.onSumit=this.onSumit.bind(this);
-      
+        
 
     }
+    //onChnage field values
     onChangee (e) {
       this.setState({ [e.target.name]: e.target.value })
       
   }
+  //Component Did Mount
     componentDidMount () {
         const token = localStorage.usertoken
         const decoded = jwt_decode(token)
@@ -31,10 +49,8 @@ class Questioniar extends Component {
             email: decoded.identity.email,
        
         })
-
-       
         
-//jQuery time
+//jQuery Previous Form to Next Animation
 var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
@@ -109,83 +125,225 @@ $(".previous").click(function(){
 	
 	});
 });
-
-      
-       
+   
     }
 
-   
+//onSubmit Questionnaire form
 onSumit(){
-  console.log(this.state.lname);
+  this.state.Ans1 = $('#ques1').val();
+  this.state.Ans2 = $('#ques2').val();
+  this.state.Ans3 = $('#ques3').val();
+  this.state.Ans4 = $('#ques4').val();
+  this.state.Ans5 = $('#ques5').val();
+  this.state.Ans6 = $('#ques6').val();
+  this.state.Ans7 = $('#ques7').val();
+  this.state.Ans8 = $('#ques8').val();
+  this.state.Ans9 = $('#ques9').val();
+  this.state.Ans10 = $('#ques10').val();
+  
+  //Check Q:1-3 result is true ot not
+  if ((JSON.parse(this.state.Ans1) && JSON.parse(this.state.Ans2) && !JSON.parse(this.state.Ans3)) || (JSON.parse(this.state.Ans1) && !JSON.parse(this.state.Ans2) && JSON.parse(this.state.Ans3)) || (!JSON.parse(this.state.Ans1) && JSON.parse(this.state.Ans2) && JSON.parse(this.state.Ans3)) ) {
+   this.state.Ans1to3=true
+  
+} else if(this.state.Ans1=="true" && this.state.Ans2=="true" && this.state.Ans3=="true") {
+  this.state.Ans1to3=true
+ 
+}else{
    
+}
+
+//Check Q:5-7 result is true ot not
+if ((JSON.parse(this.state.Ans5) && JSON.parse(this.state.Ans6) && !JSON.parse(this.state.Ans7)) || (JSON.parse(this.state.Ans5) && !JSON.parse(this.state.Ans6) && JSON.parse(this.state.Ans7)) || (!JSON.parse(this.state.Ans5) && JSON.parse(this.state.Ans6) && JSON.parse(this.state.Ans7))) {
+  this.state.Ans5to7=true
+ 
+} else if(this.state.Ans5=="true" && this.state.Ans6=="true" && this.state.Ans7=="true") {
+  this.state.Ans5to7=true
+
+}else{
+ 
+}
+//Compare result of Q;1-3 and Q:5-7
+if((this.state.Ans1to3==true && this.state.Ans5to7==true) || JSON.parse(this.state.Ans1to3) && !JSON.parse(this.state.Ans5to7)|| !JSON.parse(this.state.Ans1to3) && JSON.parse(this.state.Ans5to7))
+{this.state.finalstatus="An incident involving a life threatning event has occurred";
+}else{
+  //If true check Q:4 Ans
+  if(this.state.Ans4=="true"){
+    this.state.finalstatus="life threats";
+  
+  }else{
+    //If false check Q:4 Ans
+    if(this.state.Ans8=="true"){
+      this.state.finalstatus="An incident has caused a serious injury";
+    
+    }else{
+      //Check Q:9 and 10 are true or false
+      if((this.state.Ans9=="true" && this.state.Ans10=="true") || JSON.parse(this.state.Ans9) && !JSON.parse(this.state.Ans10)|| !JSON.parse(this.state.Ans9) && JSON.parse(this.state.Ans10))
+{this.state.finalstatus="Suffering from severe Post Trumatic Stress Disorder";
+
+}else{
+ 
+}
+
+    }
+  }
+}
+
+//Result Initial Status
+if(this.state.finalstatus==""){
+  this.state.finalstatus="No serious event has occured, it's just daily stress."
+  
+  localStorage.setItem('InitialStatus', "No serious event has occured, it's just daily stress.")
+  
+}else{
+  localStorage.setItem('InitialStatus', this.state.finalstatus)
+}
+
+var t = localStorage.getItem('usertoken')
+var decoded = jwt(t);
+
+const userAns = {
+ FinalAns:this.state.finalstatus,
+ id: decoded.identity.id
+
+}    
+//Api call Initial Status Saved to DB
+questionnaire(userAns).then(res => {
+
+      if(res=="Successfully Saved"){
+        this.props.history.push(`/profile`)
+      }
+      else{
+        alert("ReSubmit")
+      }
+    })
+
+    var t= localStorage.getItem('usertoken')
+    var date=[];
+    var statu=[];
+var decoded = jwt(t);
+const senderID = {
+
+userid: decoded.identity.id
+
+}  
+
+//APi Call Fetch previous Result of user if Exists any 
+status(senderID).then(response => {
+
+    for(var i=0;i<response.result.length;i++){
+        date.push(response.result[i].date.slice(5,16));
+        statu.push(response.result[i].status);
+      }
+     
+      localStorage.setItem("dat", JSON.stringify(date));
+      localStorage.setItem("sta", JSON.stringify(statu));
+
+})
  }
        
     render () {
         return (
-  
-           
-           
-           
           <div className="App">
           <div className="imageDiv image1"></div>
           <div className="imageDiv image2 fadeInClass"></div>
           <div className="imageDiv image3 "></div>
           <div className="imageDiv image4 fadeInClass"></div>
-                    <form id="msform"  onSubmit={this.onSumit}>
+                    <form id="msform" >
                      
                         <ul id="progressbar">
-                          <li className="active ">General Information</li>
-                          <li>TRIP Information</li>
-                            <li>Physical and Financial Status</li>
-                            <li>Submit</li>
+                          <li className="active ">Life Threats</li>
+                          <li>Life Threats</li>
+                            <li>Life Threats</li>
+                            <li>Serious Injury</li>
+                            <li>Higher Problem</li>
                         </ul>
                       
                         <fieldset>
                             <h2 className="fs-title">General Information</h2>
                             <h3 className="fs-subtitle">Tell us something more about the project</h3>
-                            <label htmlFor="fname">Project Title</label>
-                            <input type="text" name="fname" placeholder="Project Title" />
-                            <label htmlFor="fname">Description</label>
-                          <textarea name="lname" placeholder="Description"onChange={this.onChangee}></textarea>
-                          <label htmlFor="fname">Basis for Implementation</label>
-                            <input type="text" name="fname" placeholder="Basis for implementation"/>
-                            <label htmlFor="fname">Program or Project</label>
-                          <select className="form-input"><option>Program</option>
-                            <option>Project</option></select>
+                            <label id="ques">Have you ever served in a war zone, or have you ever served in
+                                                   a noncombat job that exposed you to war-related casualties (for
+                                                   example, as a medic or on graves registration duty?)  </label>
+                            <select id="ques1" className="form-input" required><option value="false">Not True</option>
+                           
+                            <option value="true">True</option>
+                            </select>
+                            <label  id="ques">Have you ever been in a serious car accident, or a serious
+                                                   accident at work or somewhere else?</label>
+                            <select id="ques2" className="form-input" required><option value="false">Not True</option>
                             
-                          
-               
-          
+                            <option value="true">True</option>
+                            </select>       
               <input type="button" name="next" className="next action-button" value="Next" />
-                        </fieldset>
-                      
+                        </fieldset>                      
                         <fieldset>
-                            <h2 className="fs-title">TRIP Information</h2>
-                            <h3 className="fs-subtitle">Your presence on the social network</h3>
-                            <input type="text" name="twitter" placeholder="Twitter"/>
-                            <input type="text" name="facebook" placeholder="Facebook"/>
-                            <input type="text" name="gplus" placeholder="Google Plus"/>
+                        <h2 className="fs-title">General Information</h2>
+                            <h3 className="fs-subtitle">Tell us something more about the project</h3>
+                            <label  id="ques">Have you ever been in a major natural or technological disaster,
+                                                  such as a fire, tornado, hurricane, flood, earthquake, orchemical
+                                                  spill? </label>
+                          <select id="ques3" className="form-input" required><option value="false">Not True</option>                  
+                            <option value="true">True</option>
+                            </select>
+                            <label id="ques"> Have you ever had a life-threatening illness such as cancer, a heart
+attack, leukemia, AIDS, multiple sclerosis, etc.? </label>
+                          <select id="ques4" className="form-input" required><option value="false">Not True</option>
+                            <option value="true">True</option>
+                            </select>
                             <input type="button" name="previous" className="previous action-button-previous" value="Previous"/>
                             <input type="button" name="next" className="next action-button" value="Next"/>
-                        </fieldset>
-                      
+                        </fieldset>                     
                       <fieldset>
-                            <h2 className="fs-title">Physical and Financial Status</h2>
-                            <h3 className="fs-subtitle">Your presence on the social network</h3>
-                            <input type="text" name="twitter" placeholder="Twitter"/>
-                            <input type="text" name="facebook" placeholder="Facebook"/>
-                            <input type="text" name="gplus" placeholder="Google Plus"/>
+                      <h2 className="fs-title">General Information</h2>
+                            <h3 className="fs-subtitle">Tell us something more about the project</h3>
+                            <label  id="ques"> Before age 18, were you ever physically punished or beaten by a
+                                                    parent, caretaker, or teacher so that: you were very frightened; or
+                                                    you thought you would be injured; or you received bruises, cuts,
+                                                    welts, lumps or other injuries?   </label>
+                            <select id="ques5" className="form-input" required><option value="false">Not True</option>>
+                            <option value="true">True</option>
+                            </select>
+                            <label  id="ques">Not including any punishments or beatings you already reported
+                                                  in Question 5, have you ever been attacked, beaten, or mugged by
+                                                  anyone, including friends, family members or strangers? </label>
+                            <select id="ques6" className="form-input" required><option value="false">Not True</option>
+                            <option value="true">True</option>
+                            </select>
                             <input type="button" name="previous" className="previous action-button-previous" value="Previous"/>
                             <input type="button" name="next" className="next action-button" value="Next"/>
                         </fieldset>
-                      
+                        <fieldset>
+                        <h2 className="fs-title">General Information</h2>
+                            <h3 className="fs-subtitle">Tell us something more about the project</h3>
+                        <label  id="ques">Has anyone ever made or pressured you into having some type of
+unwanted sexual contact?  </label>
+                          <select id="ques7" className="form-input" required><option value="false">Not True</option>
+                            <option value="true">True</option>
+                            </select>
+                            <label  id="ques"> Have you ever had a life-threatening illness such as cancer, a heart
+attack, leukemia, AIDS, multiple sclerosis, etc.? </label>
+                          <select id="ques8" className="form-input" required><option value="false">Not True</option>
+                            <option value="true">True</option>
+                            </select>
+                            <input type="button" name="previous" className="previous action-button-previous" value="Previous"/>
+                            <input type="button" name="next" className="next action-button" value="Next"/>
+                            </fieldset>
                         <fieldset>
                             <h2 className="fs-title">Submit project</h2>
                             <h3 className="fs-subtitle">Fill in your credentials to authorize submission</h3>
-                            <input type="text" name="email" placeholder="Username"/>
-                            <input type="password" name="pass" placeholder="Password"/>
+                            <label  id="ques">Have you ever been in any other situation in which you were
+                                                    seriously injured, or have you ever been in any other situation in
+                                                    which you feared you might be seriously injured or killed? </label>
+                            <select id="ques9" className="form-input" required><option value="false">Not True</option>
+                            <option value="true">True</option>
+                            </select>
+                            <label  id="ques">Has a close family member or friend died violently, for example, in
+                                                    a serious car crash, mugging, or attack? </label>
+                            <select id="ques10" className="form-input" required><option value="false">Not True</option>
+                            <option value="true">True</option>
+                            </select>
                             <input type="button" name="previous" className="previous action-button-previous" value="Previous"/>
-                           <input type="submit"  className="submit action-button" value="Submit" />
+                           <input type="button"  className="submit action-button" value="Submit"  onClick={this.onSumit} />
                         </fieldset>
                     </form>
                    </div>
