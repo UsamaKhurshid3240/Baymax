@@ -336,6 +336,15 @@ body > header {
 
 }
 }
+@media only screen and (max-device-width: 1000px) {
+.f{
+  margin-top: 3626px;
+  margin-left: -15px;
+  width: -webkit-fill-available;
+  margin-right: -25px;
+
+}
+}
 
 
 @media only screen and (max-device-width: 565px) {

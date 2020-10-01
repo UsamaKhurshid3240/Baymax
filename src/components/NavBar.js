@@ -304,9 +304,6 @@ It is not a complete replacement of a professional so if required it will contac
 </div>
 
 </div>
-<div className="row">
-<div className="col-lg-12 col-md-12 col-sm-12"><div className="immgg"></div></div>
-</div>
 <div className="col-lg-12 col-md-12 col-sm-12">
 <footer className="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off f">
  <a  className="w3-button w3-light-grey" onClick={this.topFunction}><i className="fa fa-arrow-up w3-margin-right"></i>To the top</a>

@@ -58,7 +58,7 @@
         this.endsess=this.endsess.bind(this);
         }
       endsess(){
-      
+        $('#End').hide();
     var t= localStorage.getItem('usertoken')
     var date=[];
     var statu=[];
@@ -86,7 +86,7 @@
   },2000);
   }
     componentDidMount() {
-      
+      $("#loading-wave").hide();
       $('#End').hide();
       //Make the DIV element draggagle:
       dragElement(document.getElementById("mydiv"));
@@ -191,12 +191,16 @@
                   var botResponse = res[0].text;
                 
                   if(botResponse=="Bye"||botResponse=="Alright then take care. Let's talk again sometime :)"){
-                  
-                    $('#bot-box').hide();
                     setTimeout(()=>{
-    
-                    $('#End').show();           
+                    $('#bot-box').hide();
+                    },800);
+                    $("#loading-wave").show();
+                    setTimeout(()=>{
+                      $('#End').show();  
+                      $("#loading-wave").hide();
                     },7000);
+                          
+
                   }
                   // Update state with both user and bot's latest messages
                   this.setState({
@@ -376,7 +380,10 @@
           <div id="End">
           <input type='button' className='confirmButton endSession ' value='SESSION END ClLICK ME' onClick={this.endsess} />
           </div>
-
+          <div id="loading-wave" className="col-sm-2">
+      <div className="sp sp-wave"></div>
+      <h5>SESSION END</h5>
+    </div>
         </div>
 
       )

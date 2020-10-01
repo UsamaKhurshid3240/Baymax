@@ -119,7 +119,7 @@ var startDate = Date.parse(f);
                     padding: 3,
               },
                   xAxis: {
-                      data:this.st(),
+                      data:this.dt(),
                   },
                 
                   yAxis: {},
@@ -127,7 +127,7 @@ var startDate = Date.parse(f);
                 name: 'Status',
                 type: 'line',
                 color: ['#F5847F'],
-                data:  this.dt(),
+                data:  this.st(),
 
                
 
@@ -331,34 +331,41 @@ var startDate = Date.parse(f);
             <div className="imageDiv image6 "></div>
             <div className="imageDiv image5 fadeInClass"></div>
             <div className="row ">
-<div className="col-sm-12 col-md-12 col-lg-12 "><div className="days-sess w3-hover-opacity-off"><div className="row ">
-<div className="col-sm-12 col-md-12 col-lg-2">
+<div className="col-12 col-sm-12 col-md-12 col-lg-6 "><div className="days-sess w3-hover-opacity-off"><div className="row ">
+<div className="col-12 col-12 col-sm-12 col-md-12 col-lg-2">
 <h3 className="day-head">Days:</h3>
 </div>
-<div className="col-sm-12 col-md-12 col-lg-4 ">  
+
+<div className="col-12 col-sm-12 col-md-12 col-lg-4 ">  
 <div id="days"></div>
 </div>
-<div className="col-sm-12 col-md-12 col-lg-2 ">
+</div></div></div>
+
+<div className="col-12 col-sm-12 col-md-12 col-lg-6 "><div className="days-sess w3-hover-opacity-off"><div className="row ">
+<div className="col-12 col-12 col-sm-12 col-md-12 col-lg-2">
 <h3 className="day-head">Sessions:</h3>
 </div>
-<div className="col-sm-12 col-md-12 col-lg-4 ">
+<div className="col-12 col-sm-12 col-md-12 col-lg-4 ">
  <div className="sessions"><span  className="tick">&#10003;</span><div className="counter" data-count={this.sessioncount()}>0</div></div>
-  </div></div></div>
-</div>
+  </div></div></div></div>
 </div>   
             <div className="row row-content1">
 
 
-<div className="col-sm-12 col-md-12 col-lg-12 "><div className="main-st w3-hover-opacity-off">
+<div className="col-12 col-sm-12 col-md-12 col-lg-12 "><div className="main-st w3-hover-opacity-off">
+
 <div className='label top-left down-pos'>
     <div className='content'>Positive</div>
   </div>
 <div className='label top-left down-neg'>
     <div className='content'>Negative</div>
   </div>
+
+
   <div id="graph"></div>
+ </div>
 </div>
-</div></div></div>
+</div></div>
           
         )
     }

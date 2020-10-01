@@ -45,7 +45,7 @@ class Profile extends Component {
     this.changepass = this.changepass.bind(this);
     this.change = this.change.bind(this);
     this.update = this.update.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+   
     this.oldpas = this.oldpas.bind(this);
     this.updatepass = this.updatepass.bind(this);
     this.newpass = this.newpass.bind(this);
@@ -183,7 +183,7 @@ class Profile extends Component {
       updatepass(updUserpass).then(res => {
         this.state.updateres = res;
       
-      if(this.state.updateres=="password update"){
+      if(this.state.updateres=="Update Successsfully"){
         toast.success("Password Update Successfully", {
           position: toast.POSITION.CENTER_CENTER
         });
@@ -232,6 +232,7 @@ class Profile extends Component {
       }
       else {
         alert("Password Wrong");
+    
       }
 
 
@@ -457,7 +458,7 @@ if(this.state.updateres=="Update Successsfully"){
                                       <div className="col-12 col-sm-12 col-md-12 col-lg-12">
 
 
-                                        <button id="button" type="button" className=" btn-primary btn-block  " onClick={this.changepass}>
+                                        <button id="button" type="button" className="change-pass btn-primary btn-block  " onClick={this.changepass}>
                                           Change Password
                             </button>
 
@@ -572,7 +573,7 @@ if(this.state.updateres=="Update Successsfully"){
                                   <div className="row row-mrgn">
 
                                     <div className="col-12 col-sm-12 col-md-12 col-lg-12">
-                                      <button id="updatepass-btn" type="button" className=" btn-primary btn-block " onClick={this.updatepass} >
+                                      <button id="updatepass-btn" type="button" className="change-pass btn-primary btn-block " onClick={this.updatepass} >
                                         Update Password
                             </button>
                                     </div>

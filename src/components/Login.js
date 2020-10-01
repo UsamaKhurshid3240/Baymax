@@ -151,7 +151,7 @@ class Login extends Component {
                 });
                 setTimeout(()=>{
              
-                  this.props.history.push(`/login`);
+                  this.props.history.push(`/`);
                 },1000);
               }else{
                 alert("Error Update");
@@ -236,9 +236,9 @@ class Login extends Component {
                             </div>
                             </div>
                             <div className="row ">
-                            <div className="col-12 col-sm-6 col-md-6 col-lg-6 "></div>
-         <div className="col-12 col-sm-6 col-md-6 col-lg-6 ">
-                            <a id="forgotpass"onClick={this.forgetpass}>Forgot password</a>
+                            <div className="col-12 col-sm-6 col-md-4 col-lg-4 "></div>
+         <div className="col-12 col-sm-6 col-md-8 col-lg-8 ">
+           <a id="forgotpass"onClick={this.forgetpass}> <i className="fa fa-key forgot-passicon"></i>Forgot password</a>
 </div>
 </div>
                             <div className="row ">
@@ -285,7 +285,7 @@ class Login extends Component {
           <div className="col-12 col-sm-12 col-md-9 col-lg-9 "></div>
               </div>
      
-          <fieldset className="fldst1">
+          <fieldset className="fldst1-forgotpass">
               <legend>Forgot Password</legend>
           <div className="row">
           <div className="col-12  col-sm-12 col-md-12 col-lg-12">
@@ -298,6 +298,7 @@ class Login extends Component {
                                     value={this.state.email}
                                     onChange={this.onChange}
                                     onBlur={this.checkmail}
+                                    autoComplete="off"
                                      required/>
                                      <label className="form-control-placeholder" >Email </label>
                             </div>
@@ -340,7 +341,7 @@ class Login extends Component {
           <div className="col-12  col-sm-12 col-md-12 col-lg-12">
                             <div   className="form-group">
                             <button id="fgbutton" type="submit" className="btn btn-lg btn-primary btn-block reg-btn"  onClick={this.fgsub}>
-                                Register
+                                Set Password
                             </button>
                             </div>
                             </div>

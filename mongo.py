@@ -160,7 +160,7 @@ def update_pass():
    
   
 
-    result = {'result':"password update"}
+    result = {'result':"Update Successsfully"}
 
     return jsonify({'result' : result})
 
