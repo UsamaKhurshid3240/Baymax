@@ -18,7 +18,7 @@
     "jqueryui": "^1.11.1",
     "jwt-decode": "^2.2.0",
     "moment": "^2.27.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "otp-input-react": "^0.2.4",
     "pi": "^2.0.3",
     "pip": "0.0.1",
